@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.go.yanggu.admin.mapper.ForestMapper">
+
+	<select id="selectForestListTotal" parameterType="map" resultType="int">
+		SELECT COUNT(*)
+		FROM t_child_forest c
+		<where>
+			c.gubun = #{gubun}
+    		<if test='search_type != null and search_type != "" '>
+		   		AND c.stat = #{stat}
+    		</if>
+   			<if test='startDate != null and startDate != ""'>
+	        	AND DATE_FORMAT(c.useDate,'%Y-%m-%d') &gt;= #{startDate}
+	        </if>
+	        <if test='endDate != null and endDate != ""'>
+	        	AND DATE_FORMAT(c.useDate,'%Y-%m-%d')  &lt;= #{endDate}
+	        </if>
+	        <if test="useDate != null and useDate != ''">
+				AND c.useDate = #{useDate}
+			</if>
+			<if test="stat != '' and stat != null">
+	    	AND c.stat IN
+    		<foreach open="(" separator="," close=")" item="item" collection="stat">
+	     		#{item}
+	     	</foreach>
+    	</if>
+		</where>
+	</select>
+
+	<select id="selectForestList" parameterType="map" resultType="map">
+		SELECT seq,DATE_FORMAT(insertDate, '%Y-%m-%d %H:%i:%s') insertDate,name,f_insHipon(mobile) mobile,
+		DATE_FORMAT(STR_TO_DATE(useDate,'%Y-%m-%d'),'%Y년 %m월 %d일')useDate,entryTime, cnt,
+		DATEDIFF(useDate, NOW()) difDate,remark,gubun ,stat
+		FROM t_child_forest c
+		<where>
+			gubun = #{gubun}
+    		<if test='search_type != null and search_type != "" '>
+		   		AND c.stat = #{stat}
+    		</if>
+   			<if test='startDate != null and startDate != ""'>
+	        	AND DATE_FORMAT(c.useDate,'%Y-%m-%d') &gt;= #{startDate}
+	        </if>
+	        <if test='endDate != null and endDate != ""'>
+	        	AND DATE_FORMAT(c.useDate,'%Y-%m-%d')  &lt;= #{endDate}
+	        </if>
+	        <if test="useDate != null and useDate != ''">
+				AND c.useDate = #{useDate}
+			</if>
+			<if test="stat != '' and stat != null">
+	    	AND c.stat IN
+    		<foreach open="(" separator="," close=")" item="item" collection="stat">
+	     		#{item}
+	     	</foreach>
+    	</if>
+		</where>
+		ORDER BY useDate,entryTime
+		<if test="limitStart != null">
+		LIMIT #{limitStart},#{rows}
+		</if>
+	</select>
+	
+	 <update id="admin_forest_update" parameterType="Map">
+    	UPDATE t_child_forest 
+    	<set>
+		<if test='stat.equals("c")'>
+			cancelDate = NOW(),
+		</if>
+    	stat=#{stat},cnt=#{cnt},useDate= #{useDate}
+    	</set>  WHERE seq=#{seq}
+    </update>
+    
+    <select id="selectForestOne" resultType="Map" parameterType="Map">
+		SELECT seq,DATE_FORMAT(insertDate, '%Y-%m-%d %H:%i:%s') insertDate,name,f_insHipon(mobile) mobile,DATE_FORMAT(STR_TO_DATE(useDate,'%Y-%m-%d'),'%Y년 %m월 %d일')useDate,entryTime, cnt,
+		DATEDIFF(useDate, NOW()) difDate,remark,gubun,stat
+		FROM t_child_forest 
+		WHERE 
+		seq = #{seq}
+	</select>
+	
+	<insert id="iDateForestInsert" parameterType="Map">
+		INSERT INTO t_forest_close(iDate,gubun)
+		VALUES (#{iDate},#{gubun})
+	</insert>
+	
+	<select id="getCloseDateList" resultType="Map" parameterType="Map">
+		SELECT * FROM t_forest_close WHERE gubun = #{gubun} ORDER BY iDate ASC
+	</select>
+	
+	<select id="getCloseDateCount" resultType="int" parameterType="Map">
+		SELECT COUNT(*) FROM t_forest_close WHERE gubun = #{gubun} and iDate = #{iDate} ORDER BY iDate ASC
+	</select>
+	
+	<delete id="iDateDelete"  parameterType="map">
+    	DELETE FROM t_forest_close WHERE iDate=#{iDate} and gubun = #{gubun}
+    </delete>
+    
+    <insert id="settingForestInsert" parameterType="Map">
+		INSERT INTO t_forest_setting(startDate,endDate,gubun)
+		VALUES (#{startDate},#{endDate},#{gubun})
+	</insert>
+	
+	<select id="getOpenDate" parameterType="Map" resultType="Map">
+		SELECT * FROM t_forest_setting
+		WHERE gubun = #{gubun}
+		ORDER BY insertDate DESC 
+		LIMIT 1
+	</select>
+	
+	
+</mapper>

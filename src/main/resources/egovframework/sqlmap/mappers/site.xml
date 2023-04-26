@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.go.yanggu.admin.mapper.SiteMapper">
+    <select id="selectTotalCount" resultType="int" parameterType="Map">
+    	SELECT COUNT(*) FROM t_notice n
+    	INNER JOIN t_admin a ON a.seq=n.writer
+    	WHERE 1=1
+    	<if test="stat != null and stat != ''">
+    		AND n.stat=#{stat}
+    	</if>
+    	<if test="startDate != null and startDate != ''">
+        	AND DATE_FORMAT(n.insertDate, '%Y-%m-%d') &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+        	AND DATE_FORMAT(n.insertDate, '%Y-%m-%d')  &lt;= #{endDate}
+        </if>
+        <if test="keyword != null and searchName != null and keyword != '' and searchName != ''">
+	    	<choose>
+	    		<when test='keyword == "1"'>
+	    			AND n.title LIKE CONCAT(#{searchName}, '%')
+	    		</when>
+	    		<when test='keyword == "2"'>
+	    			AND n.content LIKE CONCAT('%', #{searchName}, '%')
+	    		</when>
+	    		<when test='keyword == "3"'>
+	    			AND a.adminName LIKE CONCAT(#{searchName}, '%')
+	    		</when>
+	    	</choose>
+    	</if>
+    </select>
+    <select id="selectList" resultType="Map" parameterType="Map">
+    	SELECT n.*,a.adminName FROM t_notice n
+    	INNER JOIN t_admin a ON a.seq=n.writer
+    	WHERE 1=1
+    	<if test="stat != null and stat != ''">
+    		AND n.stat=#{stat}
+    	</if>
+    	<if test="startDate != null and startDate != ''">
+        	AND DATE_FORMAT(n.insertDate, '%Y-%m-%d') &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+        	AND DATE_FORMAT(n.insertDate, '%Y-%m-%d')  &lt;= #{endDate}
+        </if>
+        <if test="keyword != null and searchName != null and keyword != '' and searchName != ''">
+	    	<choose>
+	    		<when test='keyword == "1"'>
+	    			AND n.title LIKE CONCAT(#{searchName}, '%')
+	    		</when>
+	    		<when test='keyword == "2"'>
+	    			AND n.content LIKE CONCAT('%', #{searchName}, '%')
+	    		</when>
+	    		<when test='keyword == "3"'>
+	    			AND a.adminName LIKE CONCAT(#{searchName}, '%')
+	    		</when>
+	    	</choose>
+    	</if>
+    	ORDER BY n.kind ,n.seq DESC
+        LIMIT #{limitStart},#{rows}
+    </select>
+    <select id="selectOne" resultType="Map" parameterType="Map">
+    	SELECT n.*,a.adminName FROM t_notice n
+    	INNER JOIN t_admin a ON a.seq=n.writer
+    	WHERE n.seq=#{seq}
+    </select>
+    <insert id="insert" parameterType="Map">
+    	INSERT INTO t_notice(writer,title,content,attachment1,attachment1_org,attachment2,attachment2_org,attachment3,attachment3_org,stat,kind)
+    	VALUES(#{writer},#{title},#{content},#{attachment1},#{attachment1_org},#{attachment2},#{attachment2_org},#{attachment3},#{attachment3_org},#{stat},#{kind})
+    </insert>
+    <update id="update" parameterType="Map">
+    	UPDATE t_notice SET writer=#{writer}, title=#{title},content=#{content},attachment1=#{attachment1},attachment1_org=#{attachment1_org}
+    	,attachment2=#{attachment2},attachment2_org=#{attachment2_org},attachment3=#{attachment3},attachment3_org=#{attachment3_org}
+    	,stat=#{stat},kind=#{kind} 
+    	WHERE seq=#{seq}
+    </update>
+    <delete id="delete" parameterType="Map">
+    	DELETE FROM t_notice WHERE seq=#{seq}
+    </delete>
+    
+    <select id="selectQnaTotalCount" resultType="int" parameterType="Map">
+    	SELECT COUNT(*) FROM t_qna n
+    	WHERE 1=1
+    	<if test="stat != null and stat != ''">
+    		AND n.stat=#{stat}
+    	</if>
+    	<if test="startDate != null and startDate != ''">
+        	AND DATE_FORMAT(n.insertDate, '%Y-%m-%d') &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+        	AND DATE_FORMAT(n.insertDate, '%Y-%m-%d')  &lt;= #{endDate}
+        </if>
+         <if test="keyword != null and searchName != null and keyword != '' and searchName != ''">
+	    	<choose>
+	    		<when test='keyword == "1"'>
+	    			AND n.title LIKE CONCAT(#{searchName}, '%')
+	    		</when>
+	    		<when test='keyword == "2"'>
+	    			AND n.content LIKE CONCAT('%', #{searchName}, '%')
+	    		</when>
+	    		<when test='keyword == "3"'>
+	    			AND n.memberName LIKE CONCAT(#{searchName}, '%')
+	    		</when>
+	    	</choose>
+    	</if>
+    </select>
+    <select id="selectQnaList" resultType="Map" parameterType="Map">
+    	SELECT n.* FROM t_qna n
+    	WHERE 1=1
+    	<if test="stat != null and stat != ''">
+    		AND n.stat=#{stat}
+    	</if>
+    	<if test="startDate != null and startDate != ''">
+        	AND DATE_FORMAT(n.insertDate, '%Y-%m-%d') &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+        	AND DATE_FORMAT(n.insertDate, '%Y-%m-%d')  &lt;= #{endDate}
+        </if>
+         <if test="keyword != null and searchName != null and keyword != '' and searchName != ''">
+	    	<choose>
+	    		<when test='keyword == "1"'>
+	    			AND n.title LIKE CONCAT(#{searchName}, '%')
+	    		</when>
+	    		<when test='keyword == "2"'>
+	    			AND n.content LIKE CONCAT('%', #{searchName}, '%')
+	    		</when>
+	    		<when test='keyword == "3"'>
+	    			AND n.memberName LIKE CONCAT(#{searchName}, '%')
+	    		</when>
+	    	</choose>
+    	</if>
+    	ORDER BY n.seq DESC
+        LIMIT #{limitStart},#{rows}
+    </select>
+    
+    <select id="selectQnaOne" resultType="Map" parameterType="Map">
+    	SELECT n.* FROM t_qna n
+    	WHERE n.seq=#{seq}
+    </select>
+    
+    <update id="updateQna" parameterType="Map">
+    	UPDATE t_qna SET re_content=#{re_content},re_attachment=#{re_attachment},
+    	re_attachment_org=#{re_attachment_org},stat='Y',writer=#{writer},reInsertDate=NOW() WHERE seq=#{seq}
+    </update>
+    <delete id="deleteQna" parameterType="Map">
+    	DELETE FROM t_qna WHERE seq=#{seq}
+    </delete>
+    
+    
+    <select id="selectEcologyTotalCount" resultType="int" parameterType="Map">
+    	SELECT COUNT(*) FROM t_ecology n
+    	INNER JOIN t_admin a ON a.seq=n.writer
+    	WHERE 1=1
+    	<if test="stat != null and stat != ''">
+    		AND n.stat=#{stat}
+    	</if>
+    	<if test="startDate != null and startDate != ''">
+        	AND DATE_FORMAT(n.insertDate, '%Y-%m-%d') &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+        	AND DATE_FORMAT(n.insertDate, '%Y-%m-%d')  &lt;= #{endDate}
+        </if>
+        <if test="keyword != null and searchName != null and keyword != '' and searchName != ''">
+	    	<choose>
+	    		<when test='keyword == "1"'>
+	    			AND n.title LIKE CONCAT(#{searchName}, '%')
+	    		</when>
+	    		<when test='keyword == "2"'>
+	    			AND n.content LIKE CONCAT('%', #{searchName}, '%')
+	    		</when>
+	    		<when test='keyword == "3"'>
+	    			AND a.adminName LIKE CONCAT(#{searchName}, '%')
+	    		</when>
+	    	</choose>
+    	</if>
+    </select>
+    <select id="selecEcologytList" resultType="Map" parameterType="Map">
+    	SELECT n.*,a.adminName FROM t_ecology n
+    	INNER JOIN t_admin a ON a.seq=n.writer
+    	WHERE 1=1
+    	<if test="stat != null and stat != ''">
+    		AND n.stat=#{stat}
+    	</if>
+    	<if test="startDate != null and startDate != ''">
+        	AND DATE_FORMAT(n.insertDate, '%Y-%m-%d') &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+        	AND DATE_FORMAT(n.insertDate, '%Y-%m-%d')  &lt;= #{endDate}
+        </if>
+        <if test="keyword != null and searchName != null and keyword != '' and searchName != ''">
+	    	<choose>
+	    		<when test='keyword == "1"'>
+	    			AND n.title LIKE CONCAT(#{searchName}, '%')
+	    		</when>
+	    		<when test='keyword == "2"'>
+	    			AND n.content LIKE CONCAT('%', #{searchName}, '%')
+	    		</when>
+	    		<when test='keyword == "3"'>
+	    			AND a.adminName LIKE CONCAT(#{searchName}, '%')
+	    		</when>
+	    	</choose>
+    	</if>
+    	ORDER BY n.kind ,n.seq DESC
+        LIMIT #{limitStart},#{rows}
+    </select>
+    <select id="selectEcologyOne" resultType="Map" parameterType="Map">
+    	SELECT n.*,a.adminName FROM t_ecology n
+    	INNER JOIN t_admin a ON a.seq=n.writer
+    	WHERE n.seq=#{seq}
+    </select>
+    <insert id="insertEcology" parameterType="Map">
+    	INSERT INTO t_ecology(writer,title,content,attachment1,attachment1_org,attachment2,attachment2_org,attachment3,attachment3_org,stat,kind)
+    	VALUES(#{writer},#{title},#{content},#{attachment1},#{attachment1_org},#{attachment2},#{attachment2_org},#{attachment3},#{attachment3_org},#{stat},#{kind})
+    </insert>
+    <update id="updateEcology" parameterType="Map">
+    	UPDATE t_ecology SET writer=#{writer}, title=#{title},content=#{content},attachment1=#{attachment1},attachment1_org=#{attachment1_org}
+    	,attachment2=#{attachment2},attachment2_org=#{attachment2_org},attachment3=#{attachment3},attachment3_org=#{attachment3_org}
+    	,stat=#{stat},kind=#{kind} 
+    	WHERE seq=#{seq}
+    </update>
+    <delete id="deleteEcology" parameterType="Map">
+    	DELETE FROM t_ecology WHERE seq=#{seq}
+    </delete>
+    
+    <select id="selectwoodworkingTotalCount" resultType="int" parameterType="Map">
+    	SELECT COUNT(*) FROM t_woodworking n
+    	WHERE 1=1
+    	<if test="stat != null and stat != ''">
+    		AND n.stat=#{stat}
+    	</if>
+    	<if test="startDate != null and startDate != ''">
+        	AND DATE_FORMAT(n.insertDate, '%Y-%m-%d') &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+        	AND DATE_FORMAT(n.insertDate, '%Y-%m-%d')  &lt;= #{endDate}
+        </if>
+        <if test="searchName != null and searchName != ''">
+	    	AND n.title LIKE CONCAT(#{searchName}, '%')
+    	</if>
+    </select>
+    
+    <select id="selecwoodworkingList" resultType="Map" parameterType="Map">
+    	SELECT n.* FROM t_woodworking n
+    	WHERE 1=1
+    	<if test="stat != null and stat != ''">
+    		AND n.stat=#{stat}
+    	</if>
+    	<if test="startDate != null and startDate != ''">
+        	AND DATE_FORMAT(n.insertDate, '%Y-%m-%d') &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+        	AND DATE_FORMAT(n.insertDate, '%Y-%m-%d')  &lt;= #{endDate}
+        </if>
+        <if test="searchName != null and searchName != ''">
+	    	AND n.title LIKE CONCAT(#{searchName}, '%')
+    	</if>
+    	ORDER BY n.seq DESC
+        LIMIT #{limitStart},#{rows}
+    </select>
+    
+     <select id="selectwoodworkingOne" resultType="Map" parameterType="Map">
+    	SELECT n.* FROM t_woodworking n
+    	WHERE n.seq=#{seq}
+    </select>
+    <insert id="insertwoodworking" parameterType="Map">
+    	INSERT INTO t_woodworking(writer,title,text_date,price,attachment,attachment_org,stat,remark)
+    	VALUES(#{writer},#{title},#{text_date},#{price},#{attachment},#{attachment_org},#{stat},#{remark})
+    </insert>
+    <update id="updatewoodworking" parameterType="Map">
+    	UPDATE t_woodworking SET writer=#{writer}, title=#{title},text_date=#{text_date},price=#{price}
+    	,attachment=#{attachment},attachment_org=#{attachment_org}
+    	,stat=#{stat},remark=#{remark} 
+    	WHERE seq=#{seq}
+    </update>
+    <delete id="deletewoodworking" parameterType="Map">
+    	DELETE FROM t_woodworking WHERE seq=#{seq}
+    </delete>
+    
+    
+    <select id="selectFaqTotalCount" resultType="int" parameterType="Map">
+    	SELECT COUNT(*) FROM t_faq n
+    	INNER JOIN t_admin a ON a.seq=n.writer
+    	WHERE 1=1
+    	<if test="stat != null and stat != ''">
+    		AND n.stat=#{stat}
+    	</if>
+    	<if test="startDate != null and startDate != ''">
+        	AND DATE_FORMAT(n.insertDate, '%Y-%m-%d') &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+        	AND DATE_FORMAT(n.insertDate, '%Y-%m-%d')  &lt;= #{endDate}
+        </if>
+        <if test="keyword != null and searchName != null and keyword != '' and searchName != ''">
+	    	<choose>
+	    		<when test='keyword == "1"'>
+	    			AND n.title LIKE CONCAT(#{searchName}, '%')
+	    		</when>
+	    		<when test='keyword == "2"'>
+	    			AND n.content LIKE CONCAT('%', #{searchName}, '%')
+	    		</when>
+	    		<when test='keyword == "3"'>
+	    			AND a.adminName LIKE CONCAT(#{searchName}, '%')
+	    		</when>
+	    	</choose>
+    	</if>
+    </select>
+    <select id="selectFaqList" resultType="Map" parameterType="Map">
+    	SELECT n.*,a.adminName FROM t_faq n
+    	INNER JOIN t_admin a ON a.seq=n.writer
+    	WHERE 1=1
+    	<if test="stat != null and stat != ''">
+    		AND n.stat=#{stat}
+    	</if>
+    	<if test="startDate != null and startDate != ''">
+        	AND DATE_FORMAT(n.insertDate, '%Y-%m-%d') &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+        	AND DATE_FORMAT(n.insertDate, '%Y-%m-%d')  &lt;= #{endDate}
+        </if>
+        <if test="keyword != null and searchName != null and keyword != '' and searchName != ''">
+	    	<choose>
+	    		<when test='keyword == "1"'>
+	    			AND n.title LIKE CONCAT(#{searchName}, '%')
+	    		</when>
+	    		<when test='keyword == "2"'>
+	    			AND n.content LIKE CONCAT('%', #{searchName}, '%')
+	    		</when>
+	    		<when test='keyword == "3"'>
+	    			AND a.adminName LIKE CONCAT(#{searchName}, '%')
+	    		</when>
+	    	</choose>
+    	</if>
+    	ORDER BY n.seq DESC
+        LIMIT #{limitStart},#{rows}
+    </select>
+    <select id="selectFaq" resultType="Map" parameterType="Map">
+    	SELECT n.*,a.adminName FROM t_faq n
+    	INNER JOIN t_admin a ON a.seq=n.writer
+    	WHERE n.seq=#{seq}
+    </select>
+    <insert id="inserFaq" parameterType="Map">
+    	INSERT INTO t_faq(writer,title,content,stat)
+    	VALUES(#{writer},#{title},#{content},#{stat})
+    </insert>
+    <update id="updateFaq" parameterType="Map">
+    	UPDATE t_faq SET writer=#{writer}, title=#{title},content=#{content} ,stat=#{stat}
+    	WHERE seq=#{seq}
+    </update>
+    <delete id="deleteFaq" parameterType="Map">
+    	DELETE FROM t_faq WHERE seq=#{seq}
+    </delete>
+</mapper>

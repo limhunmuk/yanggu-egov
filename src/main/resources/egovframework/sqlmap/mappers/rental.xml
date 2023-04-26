@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.go.yanggu.admin.mapper.RentalMapper">
+    <select id="admin_rental_list_total" resultType="Map" parameterType="Map">
+    	SELECT IFNULL(COUNT(*),0) tCnt,IFNULL(sum(n.cnt),0) sCnt FROM t_dragon_apply n
+    	WHERE 1=1
+    	<choose>
+    		<when test='search_type != null and search_type != "" and search_type == "b"'>
+		    	<if test="startDate != null and startDate != ''">
+		        	AND n.useDate &gt;= #{startDate}
+		        </if>
+		        <if test='endDate != null and endDate != ""'>
+		        	AND n.useDate  &lt;= #{endDate}
+		        </if>
+    		</when>
+    		<when test='search_type != null and search_type != "" and search_type == "c"'>
+		    	<if test="startDate != null and startDate != ''">
+		        	AND DATE_FORMAT(n.cancelDate,'%Y-%m-%d') &gt;= #{startDate}
+		        </if>
+		        <if test='endDate != null and endDate != ""'>
+		        	AND DATE_FORMAT(n.cancelDate,'%Y-%m-%d')  &lt;= #{endDate}
+		        </if>
+    		</when>
+    		<otherwise>
+		    	<if test='startDate != null and startDate != ""'>
+		        	AND DATE_FORMAT(n.insertDate,'%Y-%m-%d') &gt;= #{startDate}
+		        </if>
+		        <if test='endDate != null and endDate != ""'>
+		        	AND DATE_FORMAT(n.insertDate,'%Y-%m-%d')  &lt;= #{endDate}
+		        </if>
+    		</otherwise>
+    	</choose>
+        <if test="stat != ''">
+	    	AND n.stat IN
+    		<foreach open="(" separator="," close=")" item="item" collection="stat">
+	     		#{item}
+	     	</foreach>
+    	</if>
+    </select>
+    <select id="admin_rental_list" resultType="Map" parameterType="Map">
+    	SELECT n.*,
+    	CASE CHAR_LENGTH(n.mobile) 
+		WHEN '10' THEN CONCAT(LEFT(n.mobile,3),'-',SUBSTRING(n.mobile,4,3),'-',RIGHT(n.mobile,4)) 
+		WHEN '11' THEN CONCAT(LEFT(n.mobile,3),'-',SUBSTRING(n.mobile,4,4),'-',RIGHT(n.mobile,4)) 
+		WHEN '8' THEN CONCAT(LEFT(n.mobile,4),'-',SUBSTRING(n.mobile,4,4))
+		ELSE '-'
+		END AS phone
+    	FROM t_dragon_apply n
+    	WHERE 1=1
+    	<choose>
+    		<when test='search_type != null and search_type != "" and search_type == "b"'>
+		    	<if test="startDate != null and startDate != ''">
+		        	AND n.useDate &gt;= #{startDate}
+		        </if>
+		        <if test='endDate != null and endDate != ""'>
+		        	AND n.useDate  &lt;= #{endDate}
+		        </if>
+    		</when>
+    		<when test='search_type != null and search_type != "" and search_type == "c"'>
+		    	<if test="startDate != null and startDate != ''">
+		        	AND DATE_FORMAT(n.cancelDate,'%Y-%m-%d') &gt;= #{startDate}
+		        </if>
+		        <if test='endDate != null and endDate != ""'>
+		        	AND DATE_FORMAT(n.cancelDate,'%Y-%m-%d')  &lt;= #{endDate}
+		        </if>
+    		</when>
+    		<otherwise>
+		    	<if test='startDate != null and startDate != ""'>
+		        	AND DATE_FORMAT(n.insertDate,'%Y-%m-%d') &gt;= #{startDate}
+		        </if>
+		        <if test='endDate != null and endDate != ""'>
+		        	AND DATE_FORMAT(n.insertDate,'%Y-%m-%d')  &lt;= #{endDate}
+		        </if>
+    		</otherwise>
+    	</choose>
+        
+        <if test="stat != ''">
+	    	AND n.stat IN
+    		<foreach open="(" separator="," close=")" item="item" collection="stat">
+	     		#{item}
+	     	</foreach>
+    	</if>
+    	ORDER BY n.useDate ASC
+    	<if test="limitStart != null">
+    		LIMIT #{limitStart},#{rows}
+    	</if>
+    </select>
+    
+    <update id="admin_rental_update" parameterType="Map">
+    	UPDATE t_dragon_apply SET stat=#{stat},cnt=#{cnt},useDate=#{useDate} WHERE seq=#{seq}
+    </update>
+    
+    
+    <select id="admin_experience_list_total" resultType="int" parameterType="Map">
+    	SELECT COUNT(*)
+    	FROM t_experience n
+    	JOIN t_product p ON p.seq=n.pSeq
+    	WHERE 1=1
+    	<if test="startDate != null and startDate != ''">
+        	AND n.insertDate &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+        	AND n.insertDate  &lt;= #{endDate}
+        </if>
+        <if test="seq != null and seq != ''">
+        	AND n.pSeq = #{seq}
+        </if>
+    </select>
+    <select id="admin_experience_list" resultType="Map" parameterType="Map">
+    	SELECT n.*,p.title,
+    	CASE CHAR_LENGTH(n.mobile) 
+		WHEN '10' THEN CONCAT(LEFT(n.mobile,3),'-',SUBSTRING(n.mobile,4,3),'-',RIGHT(n.mobile,4)) 
+		WHEN '11' THEN CONCAT(LEFT(n.mobile,3),'-',SUBSTRING(n.mobile,4,4),'-',RIGHT(n.mobile,4)) 
+		WHEN '8' THEN CONCAT(LEFT(n.mobile,4),'-',SUBSTRING(n.mobile,4,4))
+		ELSE '-'
+		END AS phone
+    	FROM t_experience n
+    	JOIN t_product p ON p.seq=n.pSeq
+    	WHERE 1=1
+    	<if test="startDate != null and startDate != ''">
+        	AND n.insertDate &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+        	AND n.insertDate  &lt;= #{endDate}
+        </if>
+        <if test="seq != null and seq != ''">
+        	AND n.pSeq = #{seq}
+        </if>
+    	ORDER BY n.seq DESC
+    	<if test="limitStart != null">
+    		LIMIT #{limitStart},#{rows}
+    	</if>
+    </select>
+    <select id="admin_experience_product_list" resultType="Map" parameterType="Map">
+    	SELECT *
+    	FROM t_product 
+    	WHERE stat='N'
+    </select>
+    
+    <insert id="insertDragonReserve" parameterType="Map" useGeneratedKeys="true" keyProperty="dSeq" >
+    	INSERT INTO t_dragon_apply(name,mobile,useDate,cnt,teamName)
+    	VALUES(#{name},#{mobile},#{useDate},#{cnt},#{teamName})
+    </insert>
+
+	<select id="checkDayClose" resultType="Map" parameterType="Map">
+		SELECT SUM(cnt) cnt FROM t_dragon_apply WHERE stat NOT IN ('C') AND useDate = #{date} GROUP BY useDate
+		UNION ALL
+		SELECT 0 AS 'cnt' FROM DUAL WHERE (SELECT SUM(cnt) cnt FROM t_dragon_apply WHERE stat NOT IN ('C') AND useDate = #{date} GROUP BY useDate) IS NULL
+	</select>
+
+	<select id="selectMemberOne" resultType="Map" parameterType="Map">
+		SELECT n.*,
+    	CASE CHAR_LENGTH(n.mobile) 
+		WHEN '10' THEN CONCAT(LEFT(n.mobile,3),'-',SUBSTRING(n.mobile,4,3),'-',RIGHT(n.mobile,4)) 
+		WHEN '11' THEN CONCAT(LEFT(n.mobile,3),'-',SUBSTRING(n.mobile,4,4),'-',RIGHT(n.mobile,4)) 
+		WHEN '8' THEN CONCAT(LEFT(n.mobile,4),'-',SUBSTRING(n.mobile,4,4))
+		ELSE '-'
+		END AS phone
+    	FROM t_dragon_apply n
+    	WHERE seq=#{seq}
+	</select>
+    
+    <insert id="insertSmsList" parameterType="Map">
+    	INSERT INTO t_sms(title,msg,sandPhoneNum,experienceName,smsType,phoneNum,sandSYn,dseq)
+    	VALUES
+		<foreach separator="," item="item" collection="list">
+			(#{item.title},#{item.msg},#{item.sandPhoneNum},#{item.experienceName},#{item.smsType},#{item.phoneNum},#{item.sandSYn},#{item.dseq})
+		</foreach>
+    </insert>
+
+    <select id="admin_sms_list_total" resultType="Map" parameterType="Map">
+    	SELECT COUNT(*) tCnt,
+    	(SELECT COUNT(*) FROM t_sms WHERE sandSYn="S"
+    	<if test="startDate != null and startDate != ''">
+        	AND DATE_FORMAT(sandDate,'%Y-%m-%d') &gt;= #{startDate}
+        </if>
+        <if test='endDate != null and endDate != ""'>
+        	AND DATE_FORMAT(sandDate,'%Y-%m-%d')  &lt;= #{endDate}
+        </if>
+        <if test="stat != ''">
+	    	AND smsType IN
+    		<foreach open="(" separator="," close=")" item="item" collection="stat">
+	     		#{item}
+	     	</foreach>
+    	</if>
+    	) sCnt,
+    	(SELECT COUNT(*) FROM t_sms WHERE sandSYn="F"
+    	<if test="startDate != null and startDate != ''">
+        	AND DATE_FORMAT(sandDate,'%Y-%m-%d') &gt;= #{startDate}
+        </if>
+        <if test='endDate != null and endDate != ""'>
+        	AND DATE_FORMAT(sandDate,'%Y-%m-%d')  &lt;= #{endDate}
+        </if>
+        <if test="stat != ''">
+	    	AND smsType IN
+    		<foreach open="(" separator="," close=")" item="item" collection="stat">
+	     		#{item}
+	     	</foreach>
+    	</if>
+    	) fCnt 
+    	FROM t_sms
+    	WHERE 1=1
+    	<if test="startDate != null and startDate != ''">
+        	AND DATE_FORMAT(sandDate,'%Y-%m-%d') &gt;= #{startDate}
+        </if>
+        <if test='endDate != null and endDate != ""'>
+        	AND DATE_FORMAT(sandDate,'%Y-%m-%d')  &lt;= #{endDate}
+        </if>
+        <if test="stat != ''">
+	    	AND smsType IN
+    		<foreach open="(" separator="," close=")" item="item" collection="stat">
+	     		#{item}
+	     	</foreach>
+    	</if>
+    </select>
+    
+    <select id="admin_sms_list" resultType="Map" parameterType="Map">
+		SELECT a.sandDate, a.msg, a.dseq,
+		CASE WHEN c.seq IS NOT NULL THEN c.name ELSE b.name END AS 'name',
+		a.phoneNum, a.sandPhoneNum, a.experienceName, a.sandSYn, a.smsType, a.title 
+		FROM t_sms a
+		LEFT JOIN t_dragon_apply b ON a.dseq = b.seq
+		LEFT JOIN t_child_forest c ON a.dseq = c.seq
+    	WHERE 1=1
+    	<if test="startDate != null and startDate != ''">
+        	AND DATE_FORMAT(a.sandDate,'%Y-%m-%d') &gt;= #{startDate}
+        </if>
+        <if test='endDate != null and endDate != ""'>
+        	AND DATE_FORMAT(a.sandDate,'%Y-%m-%d')  &lt;= #{endDate}
+        </if>
+        
+        <if test="stat != ''">
+	    	AND a.smsType IN
+    		<foreach open="(" separator="," close=")" item="item" collection="stat">
+	     		#{item}
+	     	</foreach>
+    	</if>
+    	ORDER BY a.sandDate DESC
+    	<if test="limitStart != null">
+    		LIMIT #{limitStart},#{rows}
+    	</if>
+    </select>
+	
+    <select id="selectCD" resultType="Map">
+    	SELECT DATE_FORMAT(NOW(), '%Y') year,DATE_FORMAT(NOW(), '%m') month,DATE_FORMAT(NOW(), '%d') day,DATE_FORMAT(NOW(), '%H') hour, 
+    		   DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 1 MONTH), '%m') nmonth, DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 1 MONTH), '%Y') nyear
+    </select>
+	
+    <select id="selectFacilitySetting" resultType="Map">
+    	SELECT * FROM t_facility_setting ORDER BY seq DESC LIMIT 1
+    </select>
+	
+</mapper>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.go.yanggu.admin.mapper.GalleryMapper">
+
+    <select id="selectGalleryTotalCount" resultType="int" parameterType="Map">
+    	SELECT COUNT(*) FROM t_gallery g
+    	INNER JOIN t_admin a ON a.seq=g.writer
+    	WHERE g.kind = #{kind}
+    	<if test="stat != null and stat != ''">
+    		AND g.stat=#{stat}
+    	</if>
+    	<if test="startDate != null and startDate != ''">
+        	AND DATE_FORMAT(g.insertDate, '%Y-%m-%d') &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+        	AND DATE_FORMAT(g.insertDate, '%Y-%m-%d')  &lt;= #{endDate}
+        </if>
+        <if test="keyword != null and searchName != null and keyword != '' and searchName != ''">
+	    	<choose>
+	    		<when test='keyword == "1"'>
+	    			AND g.title LIKE CONCAT(#{searchName}, '%')
+	    		</when>
+	    		<when test='keyword == "2"'>
+	    			AND g.content LIKE CONCAT('%', #{searchName}, '%')
+	    		</when>
+	    		<when test='keyword == "3"'>
+	    			AND a.adminName LIKE CONCAT(#{searchName}, '%')
+	    		</when>
+	    	</choose>
+    	</if>
+    </select>
+    
+    <select id="selectGalleryList" resultType="Map" parameterType="Map">
+    	SELECT g.*,a.adminName FROM t_gallery g
+    	INNER JOIN t_admin a ON a.seq=g.writer
+    	WHERE g.kind = #{kind}
+    	<if test="stat != null and stat != ''">
+    		AND g.stat=#{stat}
+    	</if>
+    	<if test="startDate != null and startDate != ''">
+        	AND DATE_FORMAT(g.insertDate, '%Y-%m-%d') &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+        	AND DATE_FORMAT(g.insertDate, '%Y-%m-%d')  &lt;= #{endDate}
+        </if>
+        <if test="keyword != null and searchName != null and keyword != '' and searchName != ''">
+	    	<choose>
+	    		<when test='keyword == "1"'>
+	    			AND g.title LIKE CONCAT(#{searchName}, '%')
+	    		</when>
+	    		<when test='keyword == "2"'>
+	    			AND g.content LIKE CONCAT('%', #{searchName}, '%')
+	    		</when>
+	    		<when test='keyword == "3"'>
+	    			AND a.adminName LIKE CONCAT(#{searchName}, '%')
+	    		</when>
+	    	</choose>
+    	</if>
+    	ORDER BY g.seq DESC
+        LIMIT #{limitStart},#{rows}
+    </select>
+    
+    <select id="selectGalleryOne" resultType="Map" parameterType="Map">
+    	SELECT g.*,a.adminName FROM t_gallery g
+    	INNER JOIN t_admin a ON a.seq=g.writer
+    	WHERE g.seq=#{seq}
+    </select>
+    
+    <insert id="insertGallery" parameterType="Map">
+    	INSERT INTO t_gallery(writer,title,content,attachment,attachment_org,stat,kind)
+    	VALUES(#{writer},#{title},#{content},#{attachment},#{attachment_org},#{stat},#{kind})
+    </insert>
+    
+    <update id="updateGallery" parameterType="Map">
+    	UPDATE  t_gallery SET title=#{title},content=#{content},attachment=#{attachment},
+    	attachment_org=#{attachment_org},stat=#{stat} WHERE seq=#{seq}
+    </update>
+    
+    <delete id="deleteGallery" parameterType="Map">
+    	DELETE FROM t_gallery WHERE seq=#{seq}
+    </delete>
+    
+</mapper>

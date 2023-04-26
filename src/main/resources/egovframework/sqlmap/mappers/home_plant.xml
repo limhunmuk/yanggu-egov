@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.go.yanggu.home.mapper.HomePlantMapper">
+	<select id="selectBotanicalList" resultType="Map" parameterType="Map">
+    	SELECT * FROM t_gallery WHERE stat='Y' AND kind=#{kind} ORDER BY seq DESC
+    </select>
+    
+     <select id="selectecologyTotal" resultType="int" parameterType="Map">
+    	SELECT COUNT(*) FROM t_ecology n
+    	WHERE n.stat='Y'
+        <if test="keyword != null and searchName != null and keyword != '' and searchName != ''">
+	    	<choose>
+	    		<when test='keyword == "1"'>
+	    			AND n.title LIKE CONCAT(#{searchName}, '%')
+	    		</when>
+	    		<when test='keyword == "2"'>
+	    			AND n.content LIKE CONCAT('%', #{searchName}, '%')
+	    		</when>
+	    	</choose>
+    	</if>
+    </select>
+    <select id="selectecologyList" resultType="Map" parameterType="Map">
+    	SELECT n.* FROM t_ecology n
+    	WHERE n.stat='Y'
+        <if test="keyword != null and searchName != null and keyword != '' and searchName != ''">
+	    	<choose>
+	    		<when test='keyword == "1"'>
+	    			AND n.title LIKE CONCAT(#{searchName}, '%')
+	    		</when>
+	    		<when test='keyword == "2"'>
+	    			AND n.content LIKE CONCAT('%', #{searchName}, '%')
+	    		</when>
+	    	</choose>
+    	</if>
+    	ORDER BY n.kind ,n.seq DESC
+        LIMIT #{limitStart},#{rows}
+    </select>
+    <select id="selectecologyOne" resultType="Map" parameterType="Map">
+    	SELECT n.* FROM t_ecology n
+    	WHERE n.seq=#{seq}
+    </select>
+    <update id="updatecologyReadCnt" parameterType="Map">
+    	UPDATE t_ecology SET read_cnt=read_cnt+1 WHERE seq=#{seq}
+    </update>
+</mapper>

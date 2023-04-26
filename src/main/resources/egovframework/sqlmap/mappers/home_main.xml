@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.go.yanggu.home.mapper.HomeMainMapper">
+
+	<select id="login" resultType="Map">
+		SELECT a.* FROM t_admin a WHERE a.adminId = #{adminId} AND a.pwd = SHA2(#{pwd},256)
+	</select>
+	
+	<update id="loginFaild"  parameterType="map">
+    	UPDATE t_admin SET count = count+1
+    	WHERE adminId = #{adminId} AND seq != 1
+    </update>
+    
+    <update id="loginSuccess"  parameterType="map">
+    	UPDATE t_admin SET count = 0
+    	WHERE adminId = #{adminId} AND seq != 1
+    </update>
+	
+	<select id="selectReservation" resultType="Map" parameterType="map">
+		SELECT a.* ,DATEDIFF(a.useDate, NOW()) difDate,
+		CASE CHAR_LENGTH(a.mobile) 
+		WHEN '10' THEN CONCAT(LEFT(a.mobile,3),'-',SUBSTRING(a.mobile,4,3),'-',RIGHT(a.mobile,4)) 
+		WHEN '11' THEN CONCAT(LEFT(a.mobile,3),'-',SUBSTRING(a.mobile,4,4),'-',RIGHT(a.mobile,4)) 
+		WHEN '8' THEN CONCAT(LEFT(a.mobile,4),'-',SUBSTRING(a.mobile,4,4))
+		ELSE '-'
+		END AS phone
+		FROM t_dragon_apply a WHERE a.name = #{name} AND a.mobile = #{mobile} AND a.seq=#{reservation_number} AND a.stat NOT IN('c')
+	</select>
+	
+	<select id="selectReservationForest" resultType="Map" parameterType="map">
+		SELECT a.* ,DATEDIFF(a.useDate, NOW()) difDate,
+		CASE CHAR_LENGTH(a.mobile) 
+		WHEN '10' THEN CONCAT(LEFT(a.mobile,3),'-',SUBSTRING(a.mobile,4,3),'-',RIGHT(a.mobile,4)) 
+		WHEN '11' THEN CONCAT(LEFT(a.mobile,3),'-',SUBSTRING(a.mobile,4,4),'-',RIGHT(a.mobile,4)) 
+		WHEN '8' THEN CONCAT(LEFT(a.mobile,4),'-',SUBSTRING(a.mobile,4,4))
+		ELSE '-'
+		END AS phone
+		FROM t_child_forest a WHERE a.name = #{name} AND a.mobile = #{mobile} AND a.gubun = #{gubun} AND a.seq=#{reservation_number} AND a.stat NOT IN('c')
+	</select>
+    
+    <update id="cancelDragonReserve"  parameterType="map">
+    	<![CDATA[
+	    	UPDATE t_dragon_apply SET stat='c', cancelDate=NOW()
+	    	WHERE stat NOT IN('c') AND DATEDIFF(useDate, NOW())>20 AND seq=#{seq}
+    	]]>
+    </update>
+    
+    <update id="cancelForestReserve"  parameterType="map">
+    	<![CDATA[
+	    	UPDATE t_child_forest SET stat='c', cancelDate=NOW()
+	    	WHERE stat NOT IN('c') AND DATEDIFF(useDate, NOW())>=1 AND seq=#{seq}
+    	]]>
+    </update>
+	
+	<select id="selectMainNotice" resultType="Map">
+		SELECT seq,title,strip_tags(content) content,DATE_FORMAT(insertDate,'%Y-%m-%d') insertDate ,DATEDIFF(NOW(),insertDate) dfDate
+		FROM t_notice 
+		WHERE stat NOT IN ('N') AND kind="Y" 
+		ORDER BY seq DESC LIMIT 3
+	</select>
+	
+	<select id="selectMainGallery" resultType="Map">
+		SELECT * FROM t_gallery 
+		WHERE stat NOT IN ('N') AND kind="D" 
+		ORDER BY seq DESC LIMIT 4
+	</select>
+	
+	<select id="selectPopupList" resultType="Map">
+		SELECT * FROM t_popup WHERE stat='N' ORDER BY seq DESC LIMIT 3
+	</select>
+    
+</mapper>

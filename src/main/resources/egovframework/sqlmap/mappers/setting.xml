@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.go.yanggu.admin.mapper.SettingMapper">
+
+	<select id="admin_member_list" resultType="Map" parameterType="Map">
+		SELECT a.* 
+		FROM t_admin a
+		WHERE a.seq != 1
+		<if test="adminName != null and adminName != ''">
+			AND a.adminName Like CONCAT(#{adminName}, '%')
+		</if>
+		<if test="adminId != null and adminId != ''">
+			AND a.adminId Like CONCAT(#{adminId}, '%')
+		</if>
+		ORDER BY a.seq DESC
+		<if test="limitStart != null">
+			LIMIT #{limitStart},#{rows}
+		</if>
+	</select>
+	
+	<select id="admin_member_list_total" parameterType="Map" resultType="int">
+		SELECT COUNT(*)
+		FROM t_admin a
+		WHERE a.seq != 1
+		<if test="adminName != null and adminName != ''">
+			AND a.adminName Like CONCAT(#{adminName}, '%')
+		</if>
+		<if test="adminId != null and adminId != ''">
+			AND a.adminId Like CONCAT(#{adminId}, '%')
+		</if>
+	</select>
+	
+	<select id="admin_member_one" resultType="Map" parameterType="Map">
+		SELECT a.* 
+		FROM t_admin a
+		WHERE a.seq = #{seq}
+	</select>
+	
+	<insert id="admin_member_insert"  parameterType="map">
+    	INSERT INTO t_admin(adminId,pwd,adminName,adminEmail,adminMobile,adminDept,auth,ip,deleteYn)
+    	VALUES (#{adminId},SHA2(#{pwd},256),#{adminName},#{adminEmail},#{adminMobile},#{adminDept},#{auth},#{ip},#{deleteYn})
+    </insert>
+    
+	<update id="admin_member_update"  parameterType="map">
+    	UPDATE t_admin SET 
+    		adminId=#{adminId},pwd=SHA2(#{pwd},256),adminName=#{adminName},
+    		adminEmail=#{adminEmail},adminMobile=#{adminMobile},adminDept=#{adminDept},auth=#{auth},ip=#{ip},deleteYn=#{deleteYn}
+    	WHERE seq = #{seq} 
+    </update>
+	
+	
+	<select id="admin_member_pupoplist" resultType="Map" parameterType="Map">
+		SELECT p.* ,a.adminName
+		FROM t_popup p
+		JOIN t_admin a ON a.seq=p.writer
+		WHERE 1=1
+		<if test="stat != null and stat != ''">
+			AND p.stat=#{stat}
+		</if>
+		<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+			AND p.insertDate &gt;= #{startDate} AND p.insertDate &lt;= #{endDate}
+		</if>
+		<if test="searchName != null and searchName != ''">
+			<choose>
+				<when test="keyword == 1">
+					AND p.title Like CONCAT(#{searchName}, '%')
+				</when>
+				<otherwise>
+					AND a.adminName Like CONCAT(#{searchName}, '%')
+				</otherwise>
+			</choose>
+		</if>
+		ORDER BY p.seq DESC
+        LIMIT #{limitStart},#{rows}
+	</select>
+	
+	<select id="admin_member_pupoplist_total" parameterType="Map" resultType="int">
+		SELECT COUNT(*)
+		FROM t_popup p
+		JOIN t_admin a ON a.seq=p.writer
+		WHERE 1=1
+		<if test="stat != null and stat != ''">
+			AND p.stat=#{stat}
+		</if>
+		<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+			AND p.insertDate &gt;= #{startDate} AND p.insertDate &lt;= #{endDate}
+		</if>
+		<if test="searchName != null and searchName != ''">
+			<choose>
+				<when test="keyword == 1">
+					AND p.title Like CONCAT(#{searchName}, '%')
+				</when>
+				<otherwise>
+					AND a.adminName Like CONCAT(#{searchName}, '%')
+				</otherwise>
+			</choose>
+		</if>
+	</select>
+	
+	<select id="admin_member_pupopone" resultType="Map" parameterType="Map">
+		SELECT p.* 
+		FROM t_popup p
+		WHERE p.seq = #{seq}
+	</select>
+	
+	<insert id="admin_member_pupopinsert"  parameterType="map">
+    	INSERT INTO t_popup(writer,title,attachment,attachment_org,stat,kind,link)
+    	VALUES (#{writer},#{title},#{attachment},#{attachment_org},#{stat},#{kind},#{link})
+    </insert>
+    
+	<update id="admin_member_pupopupdate"  parameterType="map">
+    	UPDATE t_popup SET 
+    		writer=#{writer},title=#{title},attachment=#{attachment},
+    		attachment_org=#{attachment_org},stat=#{stat},kind=#{kind},link=#{link}
+    	WHERE seq = #{seq} 
+    </update>
+    
+    <select id="admin_member_productlist" resultType="Map" parameterType="Map">
+		SELECT p.* 
+		FROM t_product p
+		ORDER BY p.seq DESC
+        LIMIT #{limitStart},#{rows}
+	</select>
+	
+	<select id="admin_member_productlist_total" parameterType="Map" resultType="int">
+		SELECT COUNT(*) FROM t_product p
+	</select>
+	
+	<select id="admin_member_productone" resultType="Map" parameterType="Map">
+		SELECT p.* 
+		FROM t_product p
+		WHERE p.seq=#{seq}
+	</select>
+	
+	<select id="admin_member_productLastone" resultType="Map" parameterType="Map">
+		SELECT p.* 
+		FROM t_product p
+		WHERE stat = 'N'
+		ORDER BY seq DESC
+		LIMIT 1
+	</select>
+	
+	<insert id="admin_member_productinsert"  parameterType="map">
+    	INSERT INTO t_product(title,text_date,mubiao,stat,content,number, text_time, price, banner, banner_org)
+    	VALUES (#{title},#{text_date},#{mubiao},#{stat},#{content},#{number}, #{text_time}, #{price}, #{banner}, #{banner_org})
+    </insert>
+    
+	<update id="admin_member_productupdate"  parameterType="map">
+    	UPDATE t_product SET 
+    		title=#{title},text_date=#{text_date},
+    		mubiao=#{mubiao},stat=#{stat},content=#{content},number=#{number},
+    		text_time = #{text_time},
+    		price = #{price},
+    		banner =  #{banner},
+    		banner_org =  #{banner_org}
+    	WHERE seq = #{seq} 
+    </update>
+	
+    <select id="selectCD" resultType="Map">
+    	SELECT DATE_FORMAT(NOW(), '%Y') year,DATE_FORMAT(NOW(), '%m') month,DATE_FORMAT(NOW(), '%d') day,DATE_FORMAT(NOW(), '%H') hour, 
+    		   DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 1 MONTH), '%m') nmonth, DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 1 MONTH), '%Y') nyear
+    </select>
+	
+	<select id="aCntUpdate" parameterType="Map" resultType="int">
+		CALL p_aCntUp(#{saveCnt},#{saveDate})
+	</select>
+	
+	<select id="getCloseDateList" resultType="Map">
+		SELECT * FROM t_facility_close ORDER BY iDate ASC
+	</select>
+	
+	<insert id="idleDateInsert"  parameterType="map">
+    	INSERT INTO t_facility_close(iDate)
+    	VALUES 
+		<foreach separator="," item="item" collection="list">
+			(#{item})
+		</foreach>
+    </insert>
+	
+	<delete id="idleDateDelete"  parameterType="map">
+    	DELETE FROM t_facility_close WHERE iDate=#{iDate}
+    </delete>
+	
+    <select id="selectFacilitySetting" resultType="Map">
+    	SELECT * FROM t_facility_setting ORDER BY seq DESC LIMIT 1
+    </select>
+	
+	<insert id="fSettingInsert"  parameterType="map">
+		INSERT INTO t_facility_setting(deadline,month01,month02,month03,month04,month05,month06,month07,month08,month09,month10,month11,month12)
+		VALUES(#{deadline},#{month01},#{month02},#{month03},#{month04},#{month05},#{month06},#{month07},#{month08},#{month09},#{month10},#{month11},#{month12})
+    </insert>
+    
+</mapper>

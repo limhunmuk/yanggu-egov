@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+    <context:component-scan base-package="kr.go.yanggu">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="webBindingInitializer">
+            <bean class="kr.go.yanggu.cmmn.egov.web.EgovBindingInitializer"/>
+        </property>
+    </bean>
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+        <property name="interceptors">
+            <list>
+                <ref bean="localeChangeInterceptor" />
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />
+    <!-- 쿠키를 이용한 Locale 이용시 <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver"/> -->
+    <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+        <property name="paramName" value="language" />
+    </bean>
+
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="defaultErrorView" value="cmmn/egovError"/>
+        <property name="exceptionMappings">
+            <props>
+                <prop key="org.springframework.dao.DataAccessException">cmmn/dataAccessFailure</prop>
+                <prop key="org.springframework.transaction.TransactionException">cmmn/transactionFailure</prop>
+                <prop key="egovframework.rte.fdl.cmmn.exception.EgovBizException">cmmn/egovError</prop>
+                <prop key="org.springframework.security.AccessDeniedException">cmmn/egovError</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" p:order="1"
+	    p:viewClass="org.springframework.web.servlet.view.JstlView"
+	    p:prefix="/WEB-INF/views" p:suffix=".jsp"/>
+
+	<mvc:annotation-driven/>
+	<aop:aspectj-autoproxy/>
+	
+	<mvc:resources mapping="/ad_css/**" location="/admin/css/" />
+    <mvc:resources mapping="/ad_font/**" location="/admin/font/" />  
+	<mvc:resources mapping="/ad_images/**" location="/admin/images/" />
+	<mvc:resources mapping="/ad_js/**" location="/admin/js/" />
+	<mvc:resources mapping="/ad_CLNDR/**" location="/admin/CLNDR/" />
+	
+	<mvc:resources mapping="/css/**" location="/home/css/" />
+    <mvc:resources mapping="/font/**" location="/home/font/" />  
+	<mvc:resources mapping="/images/**" location="/home/images/" />
+	<mvc:resources mapping="/js/**" location="/home/js/" /> 
+	<mvc:resources mapping="/img/**" location="/home/img/" /> 
+	<mvc:resources mapping="/publish/**" location="/publish/" />
+	
+	<mvc:resources mapping="/se2/**" location="/se2/" />
+	<mvc:resources mapping="/uploads/**" location="/uploads/" />
+	<mvc:resources mapping="/CLNDR/**" location="/home/CLNDR/" />
+	<mvc:resources mapping="/sample/**" location="/sample/" />
+	<mvc:resources mapping="/mailForm/**" location="/mailForm/" />
+	<mvc:resources mapping="/naverdfce4beef7aeff9bf8a33a07c1670f67.html" location="/naverdfce4beef7aeff9bf8a33a07c1670f67.html" />
+	
+	<!-- 파일 업로드로 들어오는 데이터를 처리하는 객체 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="104857600" /> <!-- 100mb 제한 -->
+	</bean>
+
+    <mvc:view-controller path="/cmmn/validator.do" view-name="cmmn/validator"/>
+</beans>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.go.yanggu.home.mapper.HomeProgramMapper">
+
+	<select id="selectWoodworkingTotal" resultType="int" parameterType="Map">
+    	SELECT COUNT(*) FROM t_woodworking WHERE stat='Y'
+    </select>
+    
+    <select id="selectWoodworkingList" resultType="Map" parameterType="Map">
+    	SELECT * FROM t_woodworking WHERE stat='Y' ORDER BY seq DESC LIMIT #{limitStart},#{rows}
+    </select>
+
+	<select id="checkDayClose" resultType="Map" parameterType="Map">
+		CALL p_checkDayClose(#{useDate})
+	</select>
+	
+	<select id="checkDayCloseForest" resultType="Map" parameterType="Map">
+		CALL p_checkDayClose_forest(#{useDate},#{gubun})
+	</select>
+	
+	<select id="selectProductList" resultType="Map" parameterType="Map">
+    	SELECT * FROM t_product WHERE stat='N'
+    </select>
+    
+    <select id="insertProduct" parameterType="Map">
+    	INSERT INTO t_experience(pSeq,name,mobile,useDate,remark)
+    	VALUES(#{seq},#{name},#{mobile},#{useDate},#{remark})
+    </select>
+    
+    <insert id="insertDragonReserve" parameterType="Map" useGeneratedKeys="true" keyProperty="dSeq" >
+    	INSERT INTO t_dragon_apply(name,mobile,useDate,cnt,teamName)
+    	VALUES(#{name},#{mobile},#{useDate},#{cnt},#{teamName})
+    </insert>
+    
+    <insert id="insertForestExperience" parameterType="Map" useGeneratedKeys="true" keyProperty="dSeq" >
+    	INSERT INTO t_child_forest(name,mobile,useDate,entryTime,cnt,gubun,remark)
+    	VALUES(#{name},#{mobile},#{useDate},#{entryTime},#{cnt},#{gubun},#{remark})
+    </insert>
+
+	<select id="selectDragonReserve" resultType="Map" parameterType="Map">
+		SELECT seq,DATE_FORMAT(insertDate, '%Y-%m-%d %H:%i:%s') insertDate,name,f_insHipon(mobile) mobile,useDate,teamName,cnt,DATEDIFF(useDate, NOW()) difDate
+		FROM t_dragon_apply 
+		WHERE stat='a' 
+		AND DATE_FORMAT(insertDate, '%Y-%m-%d') = DATE_FORMAT(NOW(), '%Y-%m-%d') 
+		AND seq = #{dSeq}
+	</select>
+	
+	<select id="selectForestExperience" resultType="Map" parameterType="Map">
+		SELECT seq,DATE_FORMAT(insertDate, '%Y-%m-%d %H:%i:%s') insertDate,name,f_insHipon(mobile) mobile,DATE_FORMAT(STR_TO_DATE(useDate,'%Y-%m-%d'),'%Y년 %m월 %d일')useDate,entryTime, cnt,
+		DATEDIFF(useDate, NOW()) difDate,remark,gubun
+		FROM t_child_forest 
+		WHERE stat='a' 
+		AND DATE_FORMAT(insertDate, '%Y-%m-%d') = DATE_FORMAT(NOW(), '%Y-%m-%d') 
+		AND seq = #{dSeq}
+	</select>
+	
+    <select id="selectCD" resultType="Map">
+    	SELECT DATE_FORMAT(NOW(), '%Y') year,DATE_FORMAT(NOW(), '%m') month,DATE_FORMAT(NOW(), '%d') day,DATE_FORMAT(NOW(), '%H') hour, 
+    		   DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 1 MONTH), '%m') nmonth, DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 1 MONTH), '%Y') nyear
+    </select>
+	
+    <select id="selectFacilitySetting" resultType="Map">
+    	SELECT seq,deadline,month01,month02,month03,month04,month05,month06,month07,month08,month09,
+    		   month10,month11,month12,insertDate,DATE_FORMAT(NOW(),'%m') mymonth 
+    	FROM t_facility_setting 
+    	ORDER BY seq DESC LIMIT 1
+    </select>
+    
+    <select id="selectForestSetting" parameterType="Map" resultType="Map">
+		SELECT * FROM t_forest_setting
+		WHERE gubun = #{gubun}
+		ORDER BY insertDate DESC 
+		LIMIT 1
+	</select>
+	
+	<select id="getProgramEntryCount" parameterType="Map" resultType="int">
+		SELECT COUNT(*) AS entry FROM t_experience WHERE pSeq = #{seq} AND useDate = #{useDate}
+	</select>
+    
+</mapper>

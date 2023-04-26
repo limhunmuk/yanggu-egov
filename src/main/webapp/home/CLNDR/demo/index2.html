@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+<head>
+    <title>CLNDR Demo</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/CLNDR/css/clndr.css">
+</head>
+<body>
+    <div class="container">
+        <div class="cal1"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="/CLNDR/js/underscore-min.js"></script>
+    <script src="/CLNDR/js/moment.min.js"></script>
+    <script src="/CLNDR/js/clndr.js"></script>
+	<script type="text/javascript" src="/js/common.min.js?20190616112"></script>
+</body>
+</html>
+<script>
+// Call this from the developer console and you can control both instances
+var calendars = {};
+var _firstDate="";
+var _lastDate="";
+var _today = getToday();
+
+$(document).ready( function() {
+	initCLNDR();
+	initSetDay();
+	initSetState();
+});
+
+function initSetDay() {
+	var i=0;
+	_firstDate=$(".day:first").attr("data-timestemp");
+	_lastDate=$(".day:last").attr("data-timestemp");
+	console.log("_firstDate=" + _firstDate);
+	console.log("_lastDate=" + _lastDate);
+}
+
+function initSetState() {
+	console.log("_firstDate=" + _firstDate);
+	console.log("_lastDate=" + _lastDate);
+
+	console.log("initSetState()");
+	var dayNum=dateDiff(_firstDate,_lastDate);
+	console.log("dayNum="+dayNum);
+	for (var i=0;i<=dayNum;i++) {
+		mydate=dayAdd(_firstDate,i);
+		console.log("mydate="+mydate);
+	}
+}
+
+function initCLNDR() {
+    var thisMonth = moment().format('YYYY-MM');
+    var eventArray = [];
+
+    calendars.clndr1 = $('.cal1').clndr({
+        events: eventArray,
+        clickEvents: {
+            click: function (target) {
+                console.log('Cal-1 clicked: ', target);
+				console.log(target.date._i);
+            },
+            today: function () {
+                console.log('Cal-1 today');
+            },
+            nextMonth: function () {
+				initSetDay();
+				initSetState();
+                console.log('Cal-1 next month');
+            },
+            previousMonth: function () {
+				initSetDay();
+				initSetState();
+                console.log('Cal-1 previous month');
+            },
+            onMonthChange: function () {
+                console.log('Cal-1 month changed');
+            },
+            nextYear: function () {
+                console.log('Cal-1 next year');
+            },
+            previousYear: function () {
+                console.log('Cal-1 previous year');
+            },
+            onYearChange: function () {
+                console.log('Cal-1 year changed');
+            },
+            nextInterval: function () {
+                console.log('Cal-1 next interval');
+            },
+            previousInterval: function () {
+                console.log('Cal-1 previous interval');
+            },
+            onIntervalChange: function () {
+                console.log('Cal-1 interval changed');
+            }
+        },
+        multiDayEvents: {
+            singleDay: 'date',
+            endDate: 'endDate',
+            startDate: 'startDate'
+        },
+        showAdjacentMonths: true,
+        adjacentDaysChangeMonth: false
+    });
+
+    $(document).keydown( function(e) {
+        if (e.keyCode == 37) {
+            calendars.clndr1.back();
+        }
+
+        if (e.keyCode == 39) {
+            calendars.clndr1.forward();
+        }
+    });
+}
+</script>
