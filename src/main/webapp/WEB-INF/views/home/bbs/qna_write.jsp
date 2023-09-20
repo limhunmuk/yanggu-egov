@@ -209,8 +209,9 @@
     	if(!flag){
     		return false;
     	}else{
-    		$.ajax({
-        	    url : "qna_insert"
+    /* 		
+    $.ajax({
+        	    url : "qna_insert.do"
         	    , data: $("#frm").serialize()
         	    , type: 'post'
         	    , dataType: 'json'
@@ -223,10 +224,59 @@
         	    }, error : function () {
         	    	alert('error');
         	    }
-        	});
+        	}); */
+    		
+    		 	var objErr;
+    		    var objData;
+    		
+    	    	alert("START CALL!");
+    	    	alert($("#frm").serialize());
+    	    	console.log($("#frm").serialize());
+    			$.ajax({
+    			    url:'qna_insert.do', //request 보낼 서버의 경로
+    			    type:'get', // 메소드(get, post, put 등)
+    			    data:$("#frm").serialize(), //보낼 데이터
+    			    success: function(data) {
+    			        //서버로부터 정상적으로 응답이 왔을 때 실행
+    			        //objData = data;
+    			        alert("정상수신 , data = "+data);
+    			    },
+    			    error: function(err) {
+    			        //서버로부터 응답이 정상적으로 처리되지 못햇을 때 실행
+    			        objErr = err;
+    			    	alert("오류발생 , error="+err.state());
+    			    	
+    			    	console.log(err.state());
+    			    	console.log(err);
+    			    	
+    			    }
+    			});
+    			return false;
     	}
     	return false;
 	}
+    
+    function test(){
+    	$.ajax({
+		    url:'/bbs/test.do', //request 보낼 서버의 경로
+		    type:'get', // 메소드(get, post, put 등)
+		  data:{'id':'admin'}, //보낼 데이터 //보낼 데이터
+		    success: function(data) {
+		        //서버로부터 정상적으로 응답이 왔을 때 실행
+		        //objData = data;
+		        alert("정상수신 , data = "+data);
+		    },
+		    error: function(err) {
+		        //서버로부터 응답이 정상적으로 처리되지 못햇을 때 실행
+		        objErr = err;
+		    	alert("오류발생 , error="+err.state());
+		    	
+		    	console.log(err.state());
+		    	console.log(err);
+		    	
+		    }
+		});
+    }
 </script>
 </body>
 </html>

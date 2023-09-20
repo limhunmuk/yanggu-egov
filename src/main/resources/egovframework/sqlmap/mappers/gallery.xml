@@ -4,6 +4,7 @@
 <mapper namespace="kr.go.yanggu.admin.mapper.GalleryMapper">
 
     <select id="selectGalleryTotalCount" resultType="int" parameterType="Map">
+		/** GalleryMapper.selectGalleryTotalCount */
     	SELECT COUNT(*) FROM t_gallery g
     	INNER JOIN t_admin a ON a.seq=g.writer
     	WHERE g.kind = #{kind}
@@ -32,6 +33,7 @@
     </select>
     
     <select id="selectGalleryList" resultType="Map" parameterType="Map">
+		/** GalleryMapper.selectGalleryList */
     	SELECT g.*,a.adminName FROM t_gallery g
     	INNER JOIN t_admin a ON a.seq=g.writer
     	WHERE g.kind = #{kind}
@@ -62,22 +64,34 @@
     </select>
     
     <select id="selectGalleryOne" resultType="Map" parameterType="Map">
+		/** GalleryMapper.selectGalleryOne */
     	SELECT g.*,a.adminName FROM t_gallery g
     	INNER JOIN t_admin a ON a.seq=g.writer
     	WHERE g.seq=#{seq}
     </select>
     
     <insert id="insertGallery" parameterType="Map">
-    	INSERT INTO t_gallery(writer,title,content,attachment,attachment_org,stat,kind)
-    	VALUES(#{writer},#{title},#{content},#{attachment},#{attachment_org},#{stat},#{kind})
+	/** GalleryMapper.insertGallery */
+		INSERT INTO t_gallery
+		    (writer, title, content, attachment, attachment_org, stat, kind, season)
+		VALUES
+		    (#{writer}, #{title}, #{content}, #{attachment}, #{attachment_org}, #{stat}, #{kind}, #{season})
     </insert>
     
     <update id="updateGallery" parameterType="Map">
-    	UPDATE  t_gallery SET title=#{title},content=#{content},attachment=#{attachment},
-    	attachment_org=#{attachment_org},stat=#{stat} WHERE seq=#{seq}
+		/** GalleryMapper.updateGallery */
+    	UPDATE  t_gallery
+    	SET title=#{title}
+    	    ,content=#{content}
+    	  	,attachment=#{attachment}
+    	  	,attachment_org=#{attachment_org}
+    	  	,stat=#{stat}
+    	  	,season=#{season}
+    	WHERE seq=#{seq}
     </update>
     
     <delete id="deleteGallery" parameterType="Map">
+		/** GalleryMapper.deleteGallery */
     	DELETE FROM t_gallery WHERE seq=#{seq}
     </delete>
     

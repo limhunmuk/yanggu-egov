@@ -1,0 +1,14 @@
+
+.list .btn_area {margin-top:20px;}
+table.search + .btn_area {margin-bottom:20px;}
+.search_wrap table.search_list td.align_l {text-align:left;padding-left:15px;padding-right:15px;}
+.scrollable {overflow:auto;}
+.scrollable table {width:auto!important;min-width:100%;}
+.scrollable table thead th {   padding-left:15px;padding-right:15px;   white-space: nowrap;}
+.scrollable table tbody td {white-space: nowrap;   padding-left:15px;padding-right:15px;}
+
+
+@media only screen and (max-width: 1150px){
+.scrollable table {font-size: 10px;}
+.scrollable table tbody td { padding-left: 7px;  padding-right: 7px;height: 24px; }
+}

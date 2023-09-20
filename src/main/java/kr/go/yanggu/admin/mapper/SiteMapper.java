@@ -67,4 +67,24 @@ public interface SiteMapper {
 	int updateFaq(Map<String, Object> map) throws SQLException;
 	
 	int deleteFaq(Map<String, Object> map) throws SQLException;
+
+	List<Map<String, Object>> selectExhibitionList(Map<String, Object> map) throws SQLException;
+
+	int selectExhibitionTotalCount(Map<String, Object> map) throws SQLException;
+
+	List<Map<String, Object>> selectExhibitionFileList(Map<String, Object> map) throws SQLException;
+
+	Map<String, Object> selectExhibitionOne(Map<String, Object> map) throws SQLException;
+
+	int insertExhibition(Map<String, Object> map) throws SQLException;
+
+	int updateExhibition(Map<String, Object> map) throws SQLException;
+
+	int deleteExhibition(Map<String, Object> map) throws SQLException;
+
+	int insertExhibitionFile(Map<String, Object> map) throws SQLException;
+
+	int deleteExhibitionFile(Map<String, Object> map) throws SQLException;
+
+
 }

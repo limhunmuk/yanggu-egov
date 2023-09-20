@@ -236,7 +236,8 @@ function initCLNDR() {
 }
 
 function dayStateToggle(mydate,gubun) {
-$.post( "/program/checkDayCloseForest",{"useDate":mydate,"gubun":gubun} , function(result) {
+	console.log("dayStateToggle");
+	$.post( "/program/checkDayCloseForest",{"useDate":mydate,"gubun":gubun} , function(result) {
 		var ret = result.po_ret;
 		var aCnt = result.po_aCnt;
 		var bCnt = result.po_bCnt;

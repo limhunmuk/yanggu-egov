@@ -129,9 +129,9 @@ function initSetDayState() {
 
 function dayReserveState(mydate) {		
 	$.post( "/program/checkDayClose","useDate="+mydate , function(result) {
-		var ret = result.po_ret;
-		var cnt = result.po_aCnt;
-		var closeYn = result.po_closeYn;
+		var ret = result.result.po_ret;
+		var cnt = result.result.po_aCnt;
+		var closeYn = result.result.po_closeYn;
 		console.log(mydate + " : dayReserveState : "+cnt)	
 		
 		if(closeYn == "Y"){

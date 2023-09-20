@@ -21,7 +21,7 @@
 <meta name="theme-color" content="#ffffff">
 
 <link rel="stylesheet" type="text/css" href="/ad_css/jquery-ui.css?111"/>
-<link rel="stylesheet" type="text/css" href="/ad_css/general.css?222"/>
+<link rel="stylesheet" type="text/css" href="/ad_css/general.css?333"/>
 <script type="text/javascript" src="/ad_js/jquery-1.12.4.min.js?3333"></script>
 <script type="text/javascript" src="/ad_js/jquery-ui.js?444"></script>
 <script type="text/javascript" src="/ad_js/layout.js?555"></script>

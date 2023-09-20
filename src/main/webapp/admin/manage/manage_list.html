@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<div id="loading" style="display:none"><img id="loading-image" src="../ad_images/common/loading.gif" alt="Loading..." /></div>
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/> -->
+<meta name="format-detection" content="telephone=no"/>
+<meta name="Keywords" content=""/>
+<meta name="Description" content=""/>
+<title>ADMINISTRATOR</title>
+
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+<link rel="manifest" href="/favicon/site.webmanifest">
+<link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<link rel="stylesheet" type="text/css" href="../ad_css/jquery-ui.css"/>
+<link rel="stylesheet" type="text/css" href="../ad_css/general.css"/>
+<script type="text/javascript" src="../ad_js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../ad_js/jquery-ui.js"></script>
+<script type="text/javascript" src="../ad_js/layout.js"></script>
+<script type="text/javascript" src="../ad_js/common.js"></script>
+<script type="text/javascript" src="../ad_js/common.min.js"></script>
+<script>
+    $(function () {
+        $('.ico_date').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'yy-mm-dd'
+        });
+        $.datepicker.setDefaults({
+            dateFormat: 'yy-mm-dd',
+            prevText: '이전 달',
+            nextText: '다음 달',
+            monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+            dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+            dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+            showMonthAfterYear: true,
+            minDate: new Date('2019-08-28'),
+            yearSuffix: '년'
+          });
+    });
+</script>
+<style>
+#loading { width: 100%; height: 100%; top: -100px; left: 0px; position: fixed; display: block;  opacity: 0.7;  background-color: #fff;  z-index: 99;  text-align: center; }
+#loading-image { position: absolute;  top: 50%;  left: 50%; z-index: 100; }
+.down_file{position: absolute; right:0; top:0 ;width:85px; height:32px; line-height:32px; text-align:center; background-color:#5e5e5e; color:#fff; font-size:14px; margin-right:-100%; border-radius:3px;}
+</style>
+</head>
+
+<body id="nav_3">
+	<div id="wrap" class="skin_type01">
+		<header id="header">
+			<div class="header_top">
+				<div class="inner relative">
+					<h1>ADMINISTRATOR</h1>
+					<div class="user_name">
+						<span class="ico"></span>
+						<p class="txt">슈퍼관리자님</p>
+						<span class="info">최종관리자</span>
+					</div>
+					<ul class="btn_wrap clearfix">
+						<li class="homepage"><a href="/">HOMEPAGE</a></li>
+						<li class="logout"><a href="/admin/logout">LOGOUT</a></li>
+					</ul>
+				</div>
+			</div>
+			<nav id="gnb">
+				<ul class="clearfix">
+					<li><a href="#">HOME</a></li>
+					<li><a href="#">예약 &middot; 신청</a></li>
+					<li><a href="#">아카이브</a></li>
+					<li><a href="#">게시판 관리</a></li>
+					<li><a href="#">회원관리</a></li>
+					<li><a href="#">통계/분석</a></li>
+					<li><a href="#">운영관리</a></li>
+				</ul>
+			</nav>
+			<div class="m_header">
+				<h1>LOGO</h1>
+				<button type="button" class="btn_menu"><img src="/ad_images/common/m_gnb_menu.png" alt="모바일 메뉴바"></button>
+			</div>
+		</header>
+		<div class="sub_wrap">
+			<aside id="lnb">
+				<h2 class="tit"><span>운영관리</span></h2>
+				<ul class="menu">
+					<li class="btn_sub">
+						<a href="./manage_list.html" class="skin_bg">운영자 관리</a>
+					</li>
+					<li class="btn_sub">
+						<a href="#">접속 통계</a>
+					</li>
+					<li class="btn_sub">
+						<a href="./menu_list.html">메뉴 관리</a>
+					</li>
+					<li class="btn_sub">
+						<a href="./main_list.html">메인 관리</a>
+						<ul class="sub_menu">
+							<li><a href="./main_list.html">메인 배너</a></li>
+							<li><a href="#">기타영역 배너</a></li>
+						</ul>
+					</li>
+					<li class="btn_sub">
+						<a href="./popup_list.html">팝업 관리</a>
+					</li>
+					<li class="btn_sub">
+						<a href="./banner_list.html">상단 띠 배너</a>
+					</li>
+				</ul>
+			</aside>
+			<div class="container clearfix">
+				<div class="content">
+					<div class="list"> 
+						<form action="experiencelist" method="post">
+							<table class="search">
+								<caption>검색</caption>
+								<colgroup>
+									<col style="width:14%;">
+									<col style="width:auto;">
+								</colgroup>
+								<tr>
+									<th scope="row">키워드</th>
+									<td>
+										<select style="width:160px;vertical-align:middle;" name="keyword">
+											<option value="1">아이디</option>
+											<option value="2">이름</option>
+										</select>
+										<input type="text" name="searchName" value="">
+									</td>
+								</tr>
+							</table>
+							<div class="align_r mt20">
+								<button type="button" class="btn_down" onclick="location.href = '';">관리자 등록</button>
+								<button type="submit" class="btn_search">검색</button>
+							</div>
+						</form>
+						<div class="search_wrap">
+							<div class="result">
+								<p class="txt">검색결과 총 <span>185</span>건</p>
+							</div>
+							<table class="search_list">
+								<caption>검색 결과</caption>
+								<colgroup>
+									<col style="width:7%;">
+									<col style="width:auto;">
+									<col style="width:15%;">
+									<col style="width:15%;">
+									<col style="width:15%;">
+									<col style="width:15%;">
+									<col style="width:15%;">
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">번호</th>
+										<th scope="col">아이디</th>
+										<th scope="col">이름</th>
+										<th scope="col">연락처</th>
+										<th scope="col">이메일</th>
+										<th scope="col">상태</th>
+										<th scope="col">최종 접속 일시</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td colspan="7">등록된 데이터가 없습니다.</td>
+									</tr>
+									<tr>
+										<td>20</td>
+										<td class="align_l">
+											<a href="./manage_view.html" class="btn_link">gdhong</a>
+										</td>
+										<td>
+											<a href="./manage_view.html" class="btn_link">홍길동</a>
+										</td>
+										<td>010-0000-0000</td>
+										<td>test@mail.com</td>
+										<td>정상</td>
+										<td>YYYY-MM-DD 00:00</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="pagination mt0">
+								<a href="?page=5&amp;startDate=&amp;endDate=&amp;seq=" class="prev">이전 페이지</a>
+								<a href="?page=1&startDate=&endDate=&seq=" class="on" onclick="return false;">1</a>									
+								<a href="?page=2&startDate=&endDate=&seq=">2</a>
+								<a href="?page=3&startDate=&endDate=&seq=">3</a>							
+								<a href="?page=4&startDate=&endDate=&seq=">4</a>
+								<a href="?page=5&startDate=&endDate=&seq=">5</a>
+								<a class="next" href="?page=2&startDate=&endDate=&seq=">다음 페이지</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		$(function(){
+			$('#gnb ul li').eq(6).addClass('on');
+		});
+		function excelDownload(){
+			$("#excel").submit();
+		}
+	</script>
+</body>
+</html>

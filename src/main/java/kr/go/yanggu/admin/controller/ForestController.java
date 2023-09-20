@@ -33,10 +33,10 @@ import kr.go.yanggu.admin.service.RentalService;
 import kr.go.yanggu.home.controller.HomeProgramController;
 import kr.go.yanggu.home.service.HomeProgramService;
 import kr.go.yanggu.util.Pager;
+import org.springframework.web.servlet.ModelAndView;
 
 
 @Controller
-@RequestMapping(value = "/admin")
 public class ForestController {
 
 	@Autowired
@@ -51,7 +51,7 @@ public class ForestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeProgramController.class);
 	
-	@RequestMapping(value = "/forest/forest_program", method = RequestMethod.GET)
+	@RequestMapping(value = "/admin/forest/forest_program", method = RequestMethod.GET)
 	public String program_children(Model model,HttpSession session) {
 		
 		if (session.getAttribute("loginSeq") == null || "".equals(session.getAttribute("loginSeq"))) {
@@ -63,7 +63,7 @@ public class ForestController {
 		return "/admin/forest/forest_program";
 	}
 	
-	@RequestMapping(value = "/forest/forest_rental", method = {RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value = "/admin/forest/forest_rental", method = {RequestMethod.GET,RequestMethod.POST})
 	public String forest_rental(Model model,@RequestParam Map<String,Object> paramMap,HttpSession session,@RequestParam(defaultValue="1") int page,@RequestParam(required=false) String[] stat) {
 		
 		if (session.getAttribute("loginSeq") == null || "".equals(session.getAttribute("loginSeq"))) {
@@ -142,7 +142,7 @@ public class ForestController {
 		return "/admin/forest/forest_rental";
 	}
 	
-	@RequestMapping(value = "/forest/forest_rental_write", method = RequestMethod.GET)
+	@RequestMapping(value = "/admin/forest/forest_rental_write", method = RequestMethod.GET)
 	public String forest_rental_write(Model model,@RequestParam Map<String,Object> map) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
@@ -157,8 +157,9 @@ public class ForestController {
 	}
 	
 	
-	@RequestMapping(value = "/forest/changeList", method = RequestMethod.POST)
+	@RequestMapping(value = "/admin/forest/changeList", method = RequestMethod.POST)
 	public String changeList(@RequestParam Map<String,Object> paramMap,@RequestParam(defaultValue="1") int page,@RequestParam(required=false) String[] stat, Model model) {
+
 		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
 		try {
     		int totalCount = forestService.selectForestListTotal(paramMap);
@@ -183,12 +184,15 @@ public class ForestController {
 		
 	}
 	
-	@RequestMapping(value = "/forest/insertForestExperienceAdmin", method = RequestMethod.POST)
+	@RequestMapping(value = "/admin/forest/insertForestExperienceAdmin", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String,Object> insertForestExperienceAdmin(@RequestParam Map<String,Object> paramMap, HttpServletRequest request) {
+    public ModelAndView insertForestExperienceAdmin(@RequestParam Map<String,Object> paramMap, HttpServletRequest request) {
+
 		Map<String,Object> resultMap = new HashMap<String,Object>();
 		Map<String,Object> checkMap = new HashMap<String,Object>();
 		logger.info(" insertForestExperience : "+paramMap);
+
+		ModelAndView mv = new ModelAndView();
         int result=0;
 		
         if (paramMap.get("adminUseDate") != null || paramMap.get("adminUseDate") != "") {
@@ -233,14 +237,19 @@ public class ForestController {
         }
         resultMap.put("result", result);
         
-        return resultMap;
+        //return resultMap;
+		mv.addObject("result", result);
+		mv.setViewName("jsonView");
+		return mv;
     }
 	
 	@ResponseBody
-	@RequestMapping(value = "/forest/forest_stat_update", method = RequestMethod.POST)
-	public String forest_stat_update(Model model,@RequestParam Map<String,Object> map) {
+	@RequestMapping(value = "/admin/forest/forest_stat_update", method = RequestMethod.POST)
+	public ModelAndView forest_stat_update(Model model,@RequestParam Map<String,Object> map) {
+
 		int result = 0;
-		
+		ModelAndView mv = new ModelAndView();
+
 		try {
 			result = forestService.admin_forest_update(map);
 		} catch (Exception e) {
@@ -248,10 +257,13 @@ public class ForestController {
 			logger.info("admin rental/admin_rental_update:",e.getMessage());
 		}
 		
-		return String.valueOf(result);
+		//return String.valueOf(result);
+		mv.addObject("result", result+"");
+		mv.setViewName("jsonView");
+		return mv;
 	}
 	
-	@RequestMapping(value = "/forest/forest_rental/excel", method = RequestMethod.POST)
+	@RequestMapping(value = "/admin/forest/forest_rental/excel", method = RequestMethod.POST)
 	public String admin_rentallist_excel(Model model,HttpServletRequest request,@RequestParam Map<String,Object> paramMap,HttpServletResponse response,@RequestParam(required=false) String[] stat) {
 		
     	List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
@@ -276,7 +288,7 @@ public class ForestController {
 	}
 	
 	
-	@RequestMapping(value = "/forest/sendSms", method = RequestMethod.POST)
+	@RequestMapping(value = "/admin/forest/sendSms", method = RequestMethod.POST)
 	public String sendSms(Model model,HttpSession session, HttpServletRequest request,String msg, String title, String mobile,String dseq,String smsType,String gubun) {
 		
 		if (session.getAttribute("loginSeq") == null || "".equals(session.getAttribute("loginSeq"))) {
@@ -369,13 +381,15 @@ public class ForestController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value = "/forest/iDateInsert", method = RequestMethod.POST)
-	public String admin_member_idleDateInsert(Model model,HttpSession session,@RequestParam Map<String,Object> paramMap) {
+	@RequestMapping(value = "/admin/forest/iDateInsert", method = RequestMethod.POST)
+	public ModelAndView admin_member_idleDateInsert(Model model,HttpSession session,@RequestParam Map<String,Object> paramMap) {
 		
 		if (session.getAttribute("loginSeq") == null || "".equals(session.getAttribute("loginSeq"))) {
-			return "-3";
+			//return "-3";
+			return null;
     	}
-		
+		ModelAndView mv = new ModelAndView();
+
 		int result = 0;
 		int checkDate = 0;
 			try {
@@ -391,19 +405,23 @@ public class ForestController {
 			logger.info("admin setting/aCntUpdate:",e.getMessage());
 		}
 		
-		return result+"";
+		//return result+"";
+		mv.addObject("result", result+"");
+		mv.setViewName("jsonView");
+		return mv;
 	}
 	
 	@ResponseBody
-	@RequestMapping(value = "/forest/getCloseDateList", method = RequestMethod.POST)
-	public List<Map<String,Object>> admin_member_getCloseDateList(Model model,HttpSession session,@RequestParam Map<String,Object> map) {
+	@RequestMapping(value = "/admin/forest/getCloseDateList", method = RequestMethod.POST)
+	public ModelAndView admin_member_getCloseDateList(Model model,HttpSession session,@RequestParam Map<String,Object> map) {
 		
 		if (session.getAttribute("loginSeq") == null || "".equals(session.getAttribute("loginSeq"))) {
 			return null;
     	}
-		
+
 		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
-		
+		ModelAndView mv = new ModelAndView();
+
 		try {
 			list = forestService.getCloseDateList(map);
 		} catch (SQLException e) {
@@ -411,17 +429,21 @@ public class ForestController {
 			logger.info("admin forest/aCntUpdate:",e.getMessage());
 		}
 		
-		return list;
+		//return list;
+		mv.addObject("result", list);
+		mv.setViewName("jsonView");
+		return mv;
 	}
 	
 	@ResponseBody
-	@RequestMapping(value = "/forest/getOpenDate", method = RequestMethod.POST)
-	public Map<String,Object> admin_forest_getOpenDate(Model model,HttpSession session,@RequestParam Map<String,Object> map) {
+	@RequestMapping(value = "/admin/forest/getOpenDate", method = RequestMethod.POST)
+	public ModelAndView admin_forest_getOpenDate(Model model,HttpSession session,@RequestParam Map<String,Object> map) {
 		
 		if (session.getAttribute("loginSeq") == null || "".equals(session.getAttribute("loginSeq"))) {
 			return null;
     	}
-		
+
+		ModelAndView mv = new ModelAndView();
 		Map<String,Object> data = new HashMap<String,Object>();
 		
 		try {
@@ -430,18 +452,23 @@ public class ForestController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.info("admin forest/aCntUpdate:",e.getMessage());
-		} 
-		
-		return data;
+		}
+
+		//return data;
+		mv.addObject("result", data);
+		mv.setViewName("jsonView");
+		return mv;
 	}
 	
 	@ResponseBody
-	@RequestMapping(value = "/forest/iDateDelete", method = RequestMethod.POST)
-	public String admin_member_iDateDelete(Model model,HttpSession session,@RequestParam Map<String,Object> paramMap) {
+	@RequestMapping(value = "/admin/forest/iDateDelete", method = RequestMethod.POST)
+	public ModelAndView admin_member_iDateDelete(Model model,HttpSession session,@RequestParam Map<String,Object> paramMap) {
 		
 		if (session.getAttribute("loginSeq") == null || "".equals(session.getAttribute("loginSeq"))) {
-			return "-3";
+			//return "-3";
+			return null;
     	}
+		ModelAndView mv = new ModelAndView();
 		
 		int result = 0;
     	try {
@@ -451,16 +478,21 @@ public class ForestController {
 			logger.info("admin setting/idleDateDelete:",e.getMessage());
 		}
 		
-		return result+"";
+		//return result+"";
+		mv.addObject("result", result);
+		mv.setViewName("jsonView");
+		return mv;
 	}
 	
 	@ResponseBody
-	@RequestMapping(value = "/forest/openDate", method = RequestMethod.POST)
-	public String admin_member_openDate(Model model,HttpSession session,@RequestParam Map<String,Object> paramMap) {
-		
+	@RequestMapping(value = "/admin/forest/openDate", method = RequestMethod.POST)
+	public ModelAndView admin_member_openDate(Model model, HttpSession session, @RequestParam Map<String,Object> paramMap) {
+
+
 		if (session.getAttribute("loginSeq") == null || "".equals(session.getAttribute("loginSeq"))) {
-			return "-3";
-    	}
+			return null;
+		}
+		
     	if (paramMap.get("startDate") != null || paramMap.get("startDate") != "") {
 			String startDate = String.valueOf(paramMap.get("startDate"))+" "+ String.valueOf(paramMap.get("sTime"));
 			paramMap.put("startDate", startDate);
@@ -470,6 +502,7 @@ public class ForestController {
 		}
 		
 		int result = 0;
+		ModelAndView mv = new ModelAndView();
     	
     	try {
     		result = forestService.settingForestInsert(paramMap);
@@ -479,6 +512,9 @@ public class ForestController {
 			logger.info("admin setting/aCntUpdate:",e.getMessage());
 		}
 		
-		return result+"";
+		//return result+"";
+		mv.addObject("result", result+"");
+		mv.setViewName("jsonView");
+		return mv;
 	}
 }

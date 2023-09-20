@@ -144,8 +144,9 @@ public class HomeBbsController {
 		return "/home/bbs/qna_write";
 	}
 	
+	
+	@RequestMapping(value = "/qna_insert.do", method = RequestMethod.GET)
 	@ResponseBody
-	@RequestMapping(value = "/qna_insert", method = RequestMethod.POST)
 	public String qnaInsert(HttpServletRequest request,Model model,@RequestParam Map<String,Object> map) {
 		int affect = 0;
 		try {
@@ -218,4 +219,14 @@ public class HomeBbsController {
 		 
 		return "/home/bbs/faqView";
 	}
+	
+	
+	@RequestMapping(value = "/test.do", method = RequestMethod.GET)
+	@ResponseBody
+	public String test(HttpServletRequest request,Model model,@RequestParam(required = false) String id) {
+		
+		System.out.println(" test >>>>>>>>>>>>>>> " + id);
+		return "ok";
+	}
+	
 }

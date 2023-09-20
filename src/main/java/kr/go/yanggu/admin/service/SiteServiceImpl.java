@@ -164,4 +164,53 @@ public class SiteServiceImpl implements SiteService{
 		return siteMapper.deleteFaq(map);
 	}
 
+	@Override
+	public List<Map<String, Object>> selectExhibitionList(Map<String, Object> map) throws SQLException {
+		return siteMapper.selectExhibitionList(map);
+	}
+
+	@Override
+	public int selectExhibitionTotalCount(Map<String, Object> map) throws SQLException {
+		return siteMapper.selectExhibitionTotalCount(map);
+	}
+
+	public Map<String, Object> selectExhibitionOne(Map<String, Object> map) throws SQLException {
+		return siteMapper.selectExhibitionOne(map);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectExhibitionFileList(Map<String, Object> map) throws SQLException {
+		return siteMapper.selectExhibitionFileList(map);
+	}
+
+	@Override
+	public int insertExhibition(Map<String, Object> map) throws SQLException {
+		return siteMapper.insertExhibition(map);
+	}
+
+	@Override
+	public int updateExhibition(Map<String, Object> map) throws SQLException {
+		return siteMapper.updateExhibition(map);
+	}
+
+	@Override
+	public int deleteExhibition(Map<String, Object> map) throws SQLException {
+		return siteMapper.deleteExhibition(map);
+	}
+
+	@Override
+	public int insertExhibitionFile(Map<String, Object> map) throws SQLException {
+		return siteMapper.insertExhibitionFile(map);
+	}
+
+	@Override
+	public int updateExhibitionFile(Map<String, Object> map) throws SQLException {
+		return 0;
+	}
+
+	@Override
+	public int deleteExhibitionFile(Map<String, Object> map) throws SQLException {
+		return siteMapper.deleteExhibitionFile(map);
+	}
+
 }

@@ -3,32 +3,48 @@
 
 <mapper namespace="kr.go.yanggu.admin.mapper.AdminMapper">
 
-	<select id="login" resultType="Map">
-		SELECT a.*,DATE_FORMAT(lastLoginDate, '%Y-%m-%d %H:%i:%s') adminLastLoginDate FROM t_admin a WHERE a.adminId = #{adminId} AND a.pwd = SHA2(#{pwd},256)
-	</select>
-	
-	<update id="loginFaild"  parameterType="map">
-    	UPDATE t_admin SET count = count+1
-    	WHERE adminId = #{adminId} AND seq != 1
+    <select id="login" resultType="Map">
+        SELECT a.*, DATE_FORMAT(lastLoginDate, '%Y-%m-%d %H:%i:%s') adminLastLoginDate
+        FROM t_admin a
+        WHERE a.adminId = #{adminId}
+          AND a.pwd = SHA2(#{pwd}, 256)
+    </select>
+
+    <update id="loginFaild" parameterType="map">
+        UPDATE t_admin
+        SET count = count + 1
+        WHERE adminId = #{adminId}
+          AND seq != 1
     </update>
-    
-    <update id="loginSuccess"  parameterType="map">
-    	UPDATE t_admin SET count = 0,lastLoginDate=NOW()
-    	WHERE adminId = #{adminId} AND seq != 1
+
+    <update id="loginSuccess" parameterType="map">
+        UPDATE t_admin
+        SET count        = 0,
+            lastLoginDate=NOW()
+        WHERE adminId = #{adminId}
+          AND seq != 1
     </update>
-    
-    <update id="lastLogin"  parameterType="map">
-    	UPDATE t_admin SET lastLoginDate=NOW()
-    	WHERE adminId = #{adminId} 
+
+    <update id="lastLogin" parameterType="map">
+        UPDATE t_admin
+        SET lastLoginDate=NOW()
+        WHERE adminId = #{adminId}
     </update>
-    
+
     <select id="selectTopNoticeList" resultType="Map">
-		SELECT * FROM t_notice ORDER BY insertDate DESC LIMIT 3
-	</select>
-	<select id="selectRentalOne" resultType="Map">
-		SELECT 
-			(SELECT COUNT(*) FROM t_dragon_apply WHERE DATE_FORMAT(insertDate, '%Y-%m-%d') = DATE_FORMAT(NOW(), '%Y-%m-%d') AND stat='a') cnt1,
-			(SELECT COUNT(*) FROM t_dragon_apply WHERE DATE_FORMAT(insertDate, '%Y-%m-%d') = DATE_FORMAT(NOW(), '%Y-%m-%d') AND stat='c') cnt2
-	</select>
-	
+        SELECT *
+        FROM t_notice
+        ORDER BY insertDate DESC LIMIT 3
+    </select>
+    <select id="selectRentalOne" resultType="Map">
+        SELECT (SELECT COUNT(*)
+                FROM t_dragon_apply
+                WHERE DATE_FORMAT(insertDate, '%Y-%m-%d') = DATE_FORMAT(NOW(), '%Y-%m-%d')
+                  AND stat = 'a') cnt1,
+               (SELECT COUNT(*)
+                FROM t_dragon_apply
+                WHERE DATE_FORMAT(insertDate, '%Y-%m-%d') = DATE_FORMAT(NOW(), '%Y-%m-%d')
+                  AND stat = 'c') cnt2
+    </select>
+
 </mapper>

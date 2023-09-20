@@ -3,6 +3,7 @@
 <mapper namespace="kr.go.yanggu.admin.mapper.ForestMapper">
 
 	<select id="selectForestListTotal" parameterType="map" resultType="int">
+		/** ForestMapper.selectForestListTotal */
 		SELECT COUNT(*)
 		FROM t_child_forest c
 		<where>
@@ -29,6 +30,7 @@
 	</select>
 
 	<select id="selectForestList" parameterType="map" resultType="map">
+		/** ForestMapper.selectForestList */
 		SELECT seq,DATE_FORMAT(insertDate, '%Y-%m-%d %H:%i:%s') insertDate,name,f_insHipon(mobile) mobile,
 		DATE_FORMAT(STR_TO_DATE(useDate,'%Y-%m-%d'),'%Y년 %m월 %d일')useDate,entryTime, cnt,
 		DATEDIFF(useDate, NOW()) difDate,remark,gubun ,stat
@@ -61,6 +63,7 @@
 	</select>
 	
 	 <update id="admin_forest_update" parameterType="Map">
+		 /** ForestMapper.admin_forest_update */
     	UPDATE t_child_forest 
     	<set>
 		<if test='stat.equals("c")'>
@@ -71,6 +74,7 @@
     </update>
     
     <select id="selectForestOne" resultType="Map" parameterType="Map">
+		/** ForestMapper.selectForestOne */
 		SELECT seq,DATE_FORMAT(insertDate, '%Y-%m-%d %H:%i:%s') insertDate,name,f_insHipon(mobile) mobile,DATE_FORMAT(STR_TO_DATE(useDate,'%Y-%m-%d'),'%Y년 %m월 %d일')useDate,entryTime, cnt,
 		DATEDIFF(useDate, NOW()) difDate,remark,gubun,stat
 		FROM t_child_forest 
@@ -79,28 +83,34 @@
 	</select>
 	
 	<insert id="iDateForestInsert" parameterType="Map">
+		/** ForestMapper.iDateForestInsert */
 		INSERT INTO t_forest_close(iDate,gubun)
 		VALUES (#{iDate},#{gubun})
 	</insert>
 	
 	<select id="getCloseDateList" resultType="Map" parameterType="Map">
+		/** ForestMapper.getCloseDateList */
 		SELECT * FROM t_forest_close WHERE gubun = #{gubun} ORDER BY iDate ASC
 	</select>
 	
 	<select id="getCloseDateCount" resultType="int" parameterType="Map">
+		/** ForestMapper.getCloseDateCount */
 		SELECT COUNT(*) FROM t_forest_close WHERE gubun = #{gubun} and iDate = #{iDate} ORDER BY iDate ASC
 	</select>
 	
 	<delete id="iDateDelete"  parameterType="map">
+		/** ForestMapper.iDateDelete */
     	DELETE FROM t_forest_close WHERE iDate=#{iDate} and gubun = #{gubun}
     </delete>
     
     <insert id="settingForestInsert" parameterType="Map">
+		/** ForestMapper.settingForestInsert */
 		INSERT INTO t_forest_setting(startDate,endDate,gubun)
 		VALUES (#{startDate},#{endDate},#{gubun})
 	</insert>
 	
 	<select id="getOpenDate" parameterType="Map" resultType="Map">
+		/** ForestMapper.getOpenDate */
 		SELECT * FROM t_forest_setting
 		WHERE gubun = #{gubun}
 		ORDER BY insertDate DESC 

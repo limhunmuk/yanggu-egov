@@ -14,16 +14,16 @@
 		<div class="login">
 	
 			<p class="txt">양구자연생태공원 관리자 페이지입니다. <br>로그인 하시려면 아이디와 비밀번호를 입력해주세요.</p>
-			<form action="/admin/login"method="post"  onsubmit="return validForm(this);">
+			<form name="frm" action="/admin/login" method="post">
 				<fieldset>
 					<legend>아이디, 비밀번호</legend>
 					<div class="input_id">
-						<span><input type="text" title="id" name="adminId" placeholder="Username"></span>
+						<span><input type="text" title="id" name="adminId" placeholder="Username" value="admin"></span>
 					</div>
 					<div class="input_pw mt10">
-						<span><input type="password" title="password" name="pwd" placeholder="Password"></span>
+						<span><input type="password" title="password" name="pwd" placeholder="Password" value="1111"></span>
 					</div>
-					<button type="submit" class="btn_login"><span>LOGIN</span></button>
+					<button type="button" class="btn_login"><span>LOGIN</span></button>
 				</fieldset>
 			</form>
 		</div>
@@ -33,6 +33,36 @@
 	</div>
 </div>
 <script>
+$(document).ready(function(){
+
+	$(".btn_login").click(function(){
+		var frm = document.frm;
+		if (validForm(frm)) {
+
+			$.ajax({
+				url : '/admin/login'
+				, data: {'adminId': frm.adminId.value, 'pwd':frm.pwd.value}
+				, type: 'post'
+			}).done( function(data){
+				obj = JSON.parse(data);
+				// console.log(obj.result);
+				// console.log(obj.adminId);
+				// console.log(obj.pwd);
+				// console.log(obj.adminType);
+				// console.log(obj.map);
+				if (obj.result === 'success') {
+					location.href = '/admin/dashboard';
+				} else {
+					alert(data.msg);
+				}
+			}).fail( function(data) {
+				console.log(data);
+				alert('error > ' + data.status);
+			});
+		}
+	});
+});
+
 function validForm(frm) {
 	var adminId = frm.adminId.value;
 	if (adminId == '') {
@@ -46,21 +76,8 @@ function validForm(frm) {
         frm.pwd.focus();
         return false;
     }
-    $.ajax({
-        url : '/admin/login'
-        , data: {'adminId':adminId, 'pwd':pwd}
-        , type: 'post'
-        , dataType: 'json'
-    }).done( function(data){
-    	if (data.result === 'success') {
-    		location.href = '/admin/rental/rentallist?page=1&startDate=<fmt:formatDate value='${now}' pattern='yyyy-MM-dd' />&endDate=<fmt:formatDate value='${now}' pattern='yyyy-MM-dd' />&search_type=b&stat=a';
-    	} else {
-    		alert(data.msg);
-    	}
-    }).fail( function() {
-        alert('error');
-    });
-    return false;
+    
+    return true;
 }
 </script>
 </body>

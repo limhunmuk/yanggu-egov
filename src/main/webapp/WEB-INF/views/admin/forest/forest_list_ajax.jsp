@@ -41,7 +41,7 @@
 													<c:forEach items="${list}" var="list" varStatus="Status">
 												<tr>
 													<td>${totalCount - ((page -1) * 10 + Status.index)}</td>
-													<td><a href="forest_rental_write?seq=${list.seq}" class="c_blue">${list.name}</a></td>
+													<td><a href="forestRentalWrite?seq=${list.seq}" class="c_blue">${list.name}</a></td>
 													<td>
 													<c:choose>
 														<c:when test="${list.entryTime =='1'}">

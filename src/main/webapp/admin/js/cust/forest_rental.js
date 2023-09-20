@@ -146,16 +146,19 @@ function initSetDayState() {
 	}
 }
 
-function dayReserveState(mydate,gubun) {			
+function dayReserveState(mydate,gubun) {
 	$.post( "/program/checkDayCloseForest",{"useDate":mydate,"gubun":gubun}, function(result) {
-		var ret = result.po_ret;
-		var aCnt = result.po_aCnt;
-		var bCnt = result.po_bCnt;
+		console.log("dayReserveState po_ret : " + result.result.po_ret);
+		console.log("dayReserveState po_aCnt : " + result.result.po_aCnt);
+		console.log("dayReserveState po_bCnt : " + result.result.po_bCnt);
+		var ret = result.result.po_ret;
+		var aCnt = result.result.po_aCnt;
+		var bCnt = result.result.po_bCnt;
 		var cCnt = 0;
 		if(gubun == 'f'){
-			cCnt = result.po_cCnt;
+			cCnt = result.result.po_cCnt;
 		}
-		var closeYn = result.po_closeYn;
+		var closeYn = result.result.po_closeYn;
 		
 		if(closeYn == "Y"){
 			$('#reserve_'+mydate).html('<span class="reserve finish">예약 불가</span>');
@@ -235,9 +238,17 @@ function initCLNDR() {
 
 function dayStateToggle(mydate,gubun) {
 $.post( "/program/checkDayCloseForest",{"useDate":mydate,"gubun":gubun} , function(result) {
-		var ret = result.po_ret;
-		var aCnt = result.po_aCnt;
-		var bCnt = result.po_bCnt;
+
+		console.log("dayStateToggle po_ret : " + result.result.po_ret);
+		console.log("dayStateToggle po_aCnt : " + result.result.po_aCnt);
+		console.log("dayStateToggle po_bCnt : " + result.result.po_bCnt);
+		var ret = result.result.po_ret;
+		var aCnt = result.result.po_aCnt;
+		var bCnt = result.result.po_bCnt;
+
+		//var ret = result.po_ret;
+		//var aCnt = result.po_aCnt;
+		//var bCnt = result.po_bCnt;
 		var cCnt = 0;
 		if(gubun =='f'){
 			cCnt = result.po_cCnt;

@@ -3,53 +3,6 @@
 
 <mapper namespace="kr.go.yanggu.admin.mapper.SettingMapper">
 
-	<select id="admin_member_list" resultType="Map" parameterType="Map">
-		SELECT a.* 
-		FROM t_admin a
-		WHERE a.seq != 1
-		<if test="adminName != null and adminName != ''">
-			AND a.adminName Like CONCAT(#{adminName}, '%')
-		</if>
-		<if test="adminId != null and adminId != ''">
-			AND a.adminId Like CONCAT(#{adminId}, '%')
-		</if>
-		ORDER BY a.seq DESC
-		<if test="limitStart != null">
-			LIMIT #{limitStart},#{rows}
-		</if>
-	</select>
-	
-	<select id="admin_member_list_total" parameterType="Map" resultType="int">
-		SELECT COUNT(*)
-		FROM t_admin a
-		WHERE a.seq != 1
-		<if test="adminName != null and adminName != ''">
-			AND a.adminName Like CONCAT(#{adminName}, '%')
-		</if>
-		<if test="adminId != null and adminId != ''">
-			AND a.adminId Like CONCAT(#{adminId}, '%')
-		</if>
-	</select>
-	
-	<select id="admin_member_one" resultType="Map" parameterType="Map">
-		SELECT a.* 
-		FROM t_admin a
-		WHERE a.seq = #{seq}
-	</select>
-	
-	<insert id="admin_member_insert"  parameterType="map">
-    	INSERT INTO t_admin(adminId,pwd,adminName,adminEmail,adminMobile,adminDept,auth,ip,deleteYn)
-    	VALUES (#{adminId},SHA2(#{pwd},256),#{adminName},#{adminEmail},#{adminMobile},#{adminDept},#{auth},#{ip},#{deleteYn})
-    </insert>
-    
-	<update id="admin_member_update"  parameterType="map">
-    	UPDATE t_admin SET 
-    		adminId=#{adminId},pwd=SHA2(#{pwd},256),adminName=#{adminName},
-    		adminEmail=#{adminEmail},adminMobile=#{adminMobile},adminDept=#{adminDept},auth=#{auth},ip=#{ip},deleteYn=#{deleteYn}
-    	WHERE seq = #{seq} 
-    </update>
-	
-	
 	<select id="admin_member_pupoplist" resultType="Map" parameterType="Map">
 		SELECT p.* ,a.adminName
 		FROM t_popup p

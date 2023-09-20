@@ -14,16 +14,16 @@
     <c:import url="/WEB-INF/views/admin/common/gnb.jsp"/>
     <div class="sub_wrap">
         <c:import url="/WEB-INF/views/admin/common/left_site.jsp">
-            <c:param name="menuOn" value="2" />
+            <c:param name="menuOn" value="3" />
         </c:import>
 		<div class="container clearfix">
 			<div class="content">
-				<a href="javascript:;" class="btn_refresh" onclick="loaction.reload();">새로고침</a>
+				<a href="javascript:;" class="btn_refresh" onclick="location.reload();">새로고침</a>
 				<div class="list_tit">
-					<h3>1:1 문의 내역</h3>
+					<h3>공지사항</h3>
 				</div>
 				<div class="list">
-				<form action="qnalist" method="post">
+					<form action="ecologylist" method="post">
 					<table class="search">
 						<caption>검색</caption>
 						<colgroup>
@@ -31,12 +31,12 @@
 							<col style="*">
 						</colgroup>
 						<tr>
-							<th scope="row">답변여부</th>
+							<th scope="row">노출상태</th>
 							<td>
                                 <select style="width:200px;" name="stat">
                                     <option value="" <c:if test="${stat == ''}">selected</c:if>>전체</option>
-                                    <option value="Y" <c:if test="${stat == 'Y'}">selected</c:if>>답변</option>
-                                    <option value="N" <c:if test="${stat == 'N'}">selected</c:if>>미답변</option>
+                                    <option value="Y" <c:if test="${stat == 'Y'}">selected</c:if>>노출</option>
+                                    <option value="N" <c:if test="${stat == 'N'}">selected</c:if>>미노출</option>
                                 </select>
 							</td>
 						</tr>
@@ -60,8 +60,8 @@
 							</td>
 						</tr>
 					</table>
+					
 					<div class="btn_area align_r mt20">
-						<input type="hidden" name="order" value="2">
 						<button class="btn_search" type="submit">검색</button>
 					</div>
 					</form>
@@ -69,14 +69,16 @@
 						<div class="result">
 							<p class="txt">검색결과 총 <span>${totalCount}</span>건</p>
 						</div>
-						<div id="excelArea">
 						<table class="search_list">
 							<caption>검색결과</caption>
 							<colgroup>
 								<col style="width:10%;">
 								<col style="*">
-                                <col style="width:10%;">
- 								<col style="width:10%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
 								<col style="width:10%;">
 								<col style="width:10%;">
 							</colgroup>
@@ -86,31 +88,41 @@
 									<th scope="col">제목</th>
 									<th scope="col">등록자</th>
 									<th scope="col">등록일</th>
-									<th scope="col">첨부파일</th>
-									<th scope="col">답변여부</th>
+									<th scope="col">첨부파일1</th>
+									<th scope="col">첨부파일2</th>
+									<th scope="col">첨부파일3</th>
+									<th scope="col">조회수</th>
+									<th scope="col">노출상태</th>
 								</tr>
 							</thead>
 							<tbody>
 								<c:choose>
 									<c:when test="${empty list }">
-										<tr><td colspan="6">데이타가 없습니다</td></tr>
+										<tr><td colspan="9">데이타가 없습니다</td></tr>
 									</c:when>
 									<c:otherwise>
 										<c:forEach var="item" items="${list}" varStatus="status">		
 											<tr>
-												<td>${totalCount - ((page -1) * 10 + status.index)}</td>
-												<td class="t_left"><a href="qnaview?seq=${item.seq }">${item.title }</a></td>
-												<td>${item.memberName }</td>
+												<c:if test="${item.kind == 'Y' }"><td>공지</td></c:if>
+												<c:if test="${item.kind == 'N' }"><td>${totalCount - ((page -1) * 10 + status.index)}</td></c:if>
+												<td class="t_left"><a href="ecologyWrite?seq=${item.seq }">${item.title }</a></td>
+												<td>${item.adminName }</td>
 												<td><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${item.insertDate }"/></td>
-												<td><c:if test="${not empty item.attachment }"><button type="button" class="btn" onclick="fileDownLoad('qna','${item.attachment}','${item.attachment_org}');">Download</button></c:if></td>
-												<td>${item.stat == "Y"?"답변":"미답변" }</td>
+												<td><c:if test="${not empty item.attachment1 }"><button type="button" class="btn" onclick="fileDownLoad('ecology','${item.attachment1}','${item.attachment1_org}');">Download</button></c:if></td>
+												<td><c:if test="${not empty item.attachment2 }"><button type="button" class="btn" onclick="fileDownLoad('ecology','${item.attachment2}','${item.attachment2_org}');">Download</button></c:if></td>
+												<td><c:if test="${not empty item.attachment3 }"><button type="button" class="btn" onclick="fileDownLoad('ecology','${item.attachment3}','${item.attachment3_org}');">Download</button></c:if></td>					
+												<td><fmt:formatNumber value="${item.read_cnt }" pattern="#,###"/></td>
+												<td>${item.stat == "Y"?"노출":"미노출" }</td>
 											</tr>
 										</c:forEach>
 									</c:otherwise>
 								</c:choose>
 							</tbody>
 						</table>
-						</div>
+                        <div class="table_btn align_r mt20 pl20">
+                            <button type="button" onclick="location.href = 'ecologywrite';">등록</button>
+                        </div>
+						<!-- 페이징 -->
 						<div class="pagination mt0">
 							<c:if test="${page gt 1  }">
 			                    <a href="?page=${page - 1}&searchName=${searchName}&keyword=${keyword}&stat=${stat}&startDate=${searchStartDate}&endDate=${searchEndDate}" class="prev">이전 페이지</a>
@@ -129,26 +141,27 @@
 			                    <a class="next" href="?page=${page + 1}&searchName=${searchName}&keyword=${keyword}&stat=${stat}&startDate=${searchStartDate}&endDate=${searchEndDate}">다음 페이지</a>
 			                </c:if>
 						</div>
+						<!-- 페이징 -->
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+<iframe name="frmHidden" id="frmHidden" style="visibility: hidden; display: none"></iframe>
 <form action="/file/download" method="post" id="fileform" name="fileform" >
 	<input type="hidden" name="src" value="">
 	<input type="hidden" name="org" value="">
 	<input type="hidden" name="tmp" value="">
-</form>
+</form> 
 <script>
     $(function () {
-    	$('#gnb ul li').eq(4).addClass('on');
+    	$('#gnb ul li').eq(3).addClass('on');
     });
     function fileDownLoad(src,tmp,org){
     	$("input[name='src']").val(src);
     	$("input[name='org']").val(org);
     	$("input[name='tmp']").val(tmp);
-    
     	$("#fileform").submit();
     }
 </script>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ko">
+<div id="loading" style="display:none"><img id="loading-image" src="../ad_images/common/loading.gif" alt="Loading..." /></div>
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/> -->
+<meta name="format-detection" content="telephone=no"/>
+<meta name="Keywords" content=""/>
+<meta name="Description" content=""/>
+<title>ADMINISTRATOR</title>
+
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+<link rel="manifest" href="/favicon/site.webmanifest">
+<link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<link rel="stylesheet" type="text/css" href="../ad_css/jquery-ui.css"/>
+<link rel="stylesheet" type="text/css" href="../ad_css/general.css"/>
+<script type="text/javascript" src="../ad_js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../ad_js/jquery-ui.js"></script>
+<script type="text/javascript" src="../ad_js/layout.js"></script>
+<script type="text/javascript" src="../ad_js/common.js"></script>
+<script type="text/javascript" src="../ad_js/common.min.js"></script>
+<script>
+    $(function () {
+        $('.ico_date').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'yy-mm-dd'
+        });
+        $.datepicker.setDefaults({
+            dateFormat: 'yy-mm-dd',
+            prevText: '이전 달',
+            nextText: '다음 달',
+            monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+            dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+            dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+            showMonthAfterYear: true,
+            minDate: new Date('2019-08-28'),
+            yearSuffix: '년'
+          });
+    });
+</script>
+<style>
+#loading { width: 100%; height: 100%; top: -100px; left: 0px; position: fixed; display: block;  opacity: 0.7;  background-color: #fff;  z-index: 99;  text-align: center; }
+#loading-image { position: absolute;  top: 50%;  left: 50%; z-index: 100; }
+.down_file{position: absolute; right:0; top:0 ;width:85px; height:32px; line-height:32px; text-align:center; background-color:#5e5e5e; color:#fff; font-size:14px; margin-right:-100%; border-radius:3px;}
+</style>
+</head>
+
+<body>
+	<div id="wrap" class="skin_type01">
+		<header id="header">
+			<div class="header_top">
+				<div class="inner relative">
+					<h1>ADMINISTRATOR</h1>
+					<div class="user_name">
+						<span class="ico"></span>
+						<p class="txt">슈퍼관리자님</p>
+						<span class="info">최종관리자</span>
+					</div>
+					<ul class="btn_wrap clearfix">
+						<li class="homepage"><a href="/">HOMEPAGE</a></li>
+						<li class="logout"><a href="/admin/logout">LOGOUT</a></li>
+					</ul>
+				</div>
+			</div>
+			<nav id="gnb">
+				<ul class="clearfix">
+					<li><a href="#">HOME</a></li>
+					<li><a href="#">예약 &middot; 신청</a></li>
+					<li><a href="#">아카이브</a></li>
+					<li><a href="#">게시판 관리</a></li>
+					<li><a href="#">회원관리</a></li>
+					<li><a href="#">통계/분석</a></li>
+					<li><a href="#">운영관리</a></li>
+				</ul>
+			</nav>
+			<div class="m_header">
+				<h1>LOGO</h1>
+				<button type="button" class="btn_menu"><img src="/ad_images/common/m_gnb_menu.png" alt="모바일 메뉴바"></button>
+			</div>
+		</header>
+		<div class="sub_wrap">		
+			<aside id="lnb">
+				<h2 class="tit"><span>운영관리</span></h2>
+				<ul class="menu">
+					<li class="btn_sub">
+						<a href="./manage_list.html">운영자 관리</a>
+					</li>
+					<li class="btn_sub">
+						<a href="#">접속 통계</a>
+					</li>
+					<li class="btn_sub">
+						<a href="./menu_list.html" class="skin_bg">메뉴 관리</a>
+					</li>
+					<li class="btn_sub">
+						<a href="./main_list.html">메인 관리</a>
+						<ul class="sub_menu">
+							<li><a href="./main_list.html">메인 배너</a></li>
+							<li><a href="#">기타영역 배너</a></li>
+						</ul>
+					</li>
+					<li class="btn_sub">
+						<a href="./popup_list.html">팝업 관리</a>
+					</li>
+					<li class="btn_sub">
+						<a href="./banner_list.html">상단 띠 배너</a>
+					</li>
+				</ul>
+			</aside>
+			<div class="container clearfix">
+				<div class="content">
+					<a href="javscript:;" class="btn_refresh" onclick="location.reload();">새로고침</a>
+					<div class="list_tit">
+						<h3>메뉴 관리</h3>
+					</div>
+					<div class="write">
+						<form id="frm" onsubmit="return frm_submit(this);">
+							<div class="btn_area">
+								<button type="button" class="btn">+ 메뉴추가</button>
+								<a href="javascript: window.open('../popup/menu_order.html','팝업창','width=600, height=800');" class="btn">순서변경</a>
+								<button type="button" class="btn">- 메뉴삭제</button>
+							</div>
+							<div class="main_box">
+								<div class="menu_wrap">
+									<div class="menu_list">
+										<div class="menu_new">
+											<p class="txt">등록한 메뉴가 없습니다.</p>
+											<div class="input_area">
+												<i class="ico_menu"></i>
+												<input type="text" title="메뉴이름 입력" placeholder="메뉴이름 입력" style="width: 100%;">
+											</div>
+										</div>
+										<dl>
+											<dt>
+												<a href="javascript:;" class="depth1">1depth 이름 A</a>
+											</dt>
+											<dd class="depth_list">
+												<ul>
+													<li>
+														<a href="javascript:;" class="depth2">2depth 이름 a1</a>
+													</li>
+													<li>
+														<div class="depth2">
+															<input type="text" style="width: 100%;" placeholder="메뉴이름 입력">
+														</div>
+													</li>
+												</ul>
+											</dd>
+										</dl>
+										<dl>
+											<dt>
+												<a href="javascript:;" class="depth1">1depth 이름 B</a>
+											</dt>
+											<dd class="depth_list">
+												<ul>
+													<li>
+														<a href="javascript:;" class="depth2">2depth 이름 b1</a>
+													</li>
+													<li>
+														<a href="javascript:;" class="depth2">2depth 이름 b2</a>
+													</li>
+													<li>
+														<a href="javascript:;" class="depth2">2depth 이름 b3</a>
+													</li>
+												</ul>
+											</dd>
+										</dl>
+									</div>
+								</div>
+							</div>
+							<div class="side_box">
+								<div class="view_table mt20">
+									<table>
+										<caption>작성</caption>
+										<colgroup>
+											<col style="width:20%;">
+											<col style="width:80%;">
+										</colgroup>
+										<tbody>
+											<tr>
+												<th scope="row">메뉴 제목 <span class="asta">*</span></th>
+												<td>
+													<input type="text" title="메뉴 제목 입력" placeholder="" style="width:100%;">
+												</td>
+											</tr>
+											<tr>
+												<th scope="row">SEO 설정 키워드 <i class="ico_info" data-tooltip-text="SEO 키워드를 메뉴 성격에 맞게 적절하게 입력해주시면 검색 노출이 잘 됩니다."></i></th>
+												<td>
+													<input type="text" title="SEO 설정 키워드" placeholder="" style="width:100%;">
+												</td>
+											</tr>
+											<tr>
+												<th scope="row">메뉴 유형 <span class="asta">*</span></th>
+												<td>
+													<div>
+														<input type="radio" id="boardy_01" name="board" value="">
+														<label for="boardy_01">게시판</label>
+														<input type="radio" id="boardy_02" name="board" value="">
+														<label for="boardy_02">콘텐츠</label>
+														<input type="radio" id="boardy_03" name="board" value="">
+														<label for="boardy_03">링크</label>
+													</div>
+													<!-- 링크 -->
+													<div class="mt10">
+														<input type="text" title="링크 URL" id="url" value="" style="width: 70%;">
+														<label for="url" class="blind">링크 URL 작성</label>
+														<select name="linkList" id="linkList" style="width: 150px; vertical-align: top;">
+															<option value="">현재창</option>
+															<option value="">새창</option>
+															<option value="">링크없음</option>
+														</select>
+													</div>
+												</td>
+											</tr>
+											<tr>
+												<th scope="row">노출상태 <span class="asta">*</span></th>
+												<td>
+													<input type="radio" id="open_01" name="open" value="" checked="">
+													<label for="open_01">노출</label>
+													<input type="radio" id="open_02" name="open" value="">
+													<label for="open_02">미노출</label>
+												</td>
+											</tr>
+											<!-- 콘텐츠 -->
+											<tr>
+												<th scope="row">내용 <span class="asta">*</span></th>
+												<td>
+													<textarea name="editor" id="editor" cols="30" rows="10">에디터 영역입니다. </textarea>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<div class="write_btn align_r mt35">
+								<button type="submit" class="btn_modify">저장</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		$(function(){
+			$('#gnb ul li').eq(6).addClass('on');
+		});
+		function excelDownload(){
+			$("#excel").submit();
+		}
+	</script>
+</body>
+
+</html>

@@ -36,6 +36,7 @@ import kr.go.yanggu.admin.service.RentalService;
 import kr.go.yanggu.admin.service.SettingService;
 import kr.go.yanggu.home.service.HomeProgramService;
 import kr.go.yanggu.util.Pager;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Handles requests for the application home page.
@@ -432,9 +433,13 @@ public class HomeProgramController {
 		return "/home/program/reservation3";
 	}
 
+	// lhm 23.09.14
+	// admin에서 home을 호출??
 	@RequestMapping(value = "/checkDayClose", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> checkDayClose(@RequestParam Map<String, Object> paramMap, HttpServletRequest request) {
+	public ModelAndView checkDayClose(@RequestParam Map<String, Object> paramMap, HttpServletRequest request) {
+
+		ModelAndView mv = new ModelAndView();
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		logger.info(" checkDayClose ");
@@ -448,14 +453,18 @@ public class HomeProgramController {
 			e.printStackTrace();
 			logger.info("admin login:", e.getMessage());
 		}
-		return map;
+		//return map;
+		mv.addObject("result", map);
+		mv.setViewName("jsonView");
+		return mv;
 	}
 
 	@RequestMapping(value = "/checkDayCloseForest", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> checkDayCloseForest(@RequestParam Map<String, Object> paramMap,
+	public ModelAndView checkDayCloseForest(@RequestParam Map<String, Object> paramMap,
 			HttpServletRequest request) {
 
+		ModelAndView mv = new ModelAndView();
 		Map<String, Object> map = new HashMap<String, Object>();
 		logger.info(" checkDayCloseForest ");
 
@@ -468,7 +477,11 @@ public class HomeProgramController {
 			e.printStackTrace();
 			logger.info("admin login:", e.getMessage());
 		}
-		return map;
+		//return map;
+		// 23.09.12 lhm 추가
+		mv.addObject("result", map);
+		mv.setViewName("jsonView");
+		return mv;
 	}
 
 	@RequestMapping(value = "/insertDragonReserve", method = RequestMethod.POST)

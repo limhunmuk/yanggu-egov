@@ -21,18 +21,23 @@
 	<nav id="gnb">
 		<ul class="clearfix">
 			<li><a href="/admin/dashboard">HOME</a></li>
-			<c:if test="${fn:substring(sessionScope.loginAuth,3,4) == '1'}">
-				<li><a href="/admin/rental/rentallist?page=1&startDate=<fmt:formatDate value='${now}' pattern='yyyy-MM-dd' />&endDate=<fmt:formatDate value='${now}' pattern='yyyy-MM-dd' />&search_type=b&stat=a"> 예약 신청 관리</a></li>
+			<c:if test="${fn:substring(sessionScope.loginAuth,5,6) == '1'}">
+				<li><a href="/admin/rental/forestRentalList?gubun=e">예약·신청</a></li>
 			</c:if>
-			<li><a href="/admin/forest/forest_rental?gubun=e">유아숲 신청관리</a></li>
-			<c:if test="${fn:substring(sessionScope.loginAuth,2,3) == '1'}"> 
-				<li><a href="/admin/gallery/gallerylist?kind=A">갤러리관리</a></li>
+			<c:if test="${fn:substring(sessionScope.loginAuth,4,5) == '1'}">
+				<li><a href="/admin/gallery/galleryList?kind=A">아카이브</a></li>
+			</c:if>
+			<c:if test="${fn:substring(sessionScope.loginAuth,3,4) == '1'}">
+				<li><a href="/admin/site/noticeList">게시판관리</a></li>
+			</c:if>
+			<c:if test="${fn:substring(sessionScope.loginAuth,2,3) == '1'}">
+				<li><a href="/admin/setting/memberList">회원관리</a></li>
 			</c:if>
 			<c:if test="${fn:substring(sessionScope.loginAuth,1,2) == '1'}">
-				<li><a href="/admin/site/noticelist">게시판관리</a></li>
+				<li><a href="/admin/statistics/category1">통계/분석</a></li>
 			</c:if>
 			<c:if test="${fn:substring(sessionScope.loginAuth,0,1) == '1'}">
-				<li><a href="/admin/setting/member/accountlist">설정</a></li>
+				<li><a href="/admin/manage/managerList">운영관리</a></li>
 			</c:if>
 		</ul>
 	</nav>
