@@ -611,4 +611,78 @@
         DELETE FROM t_exhibition_file WHERE seq=#{seq} and exhibitionSeq=#{exhibitionSeq}
     </delete>
 
+    <select id="selectAdvertisementVideoTotalCount" resultType="int" parameterType="Map">
+        /** SiteMapper.selectAdvertisementVideoTotalCount */
+        SELECT COUNT(*) FROM t_advertisement_video n
+        INNER JOIN t_admin a ON a.seq=n.writer
+        WHERE 1=1
+        <if test="stat != null and stat != ''">
+            AND n.stat=#{stat}
+        </if>
+        <if test="startDate != null and startDate != ''">
+            AND DATE_FORMAT(n.insertDate, '%Y-%m-%d') &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND DATE_FORMAT(n.insertDate, '%Y-%m-%d') &lt;= #{endDate}
+        </if>
+        <if test="keyword != null and searchName != null and keyword != '' and searchName != ''">
+            <choose>
+                <when test='keyword == "1"'>
+                    AND n.title LIKE CONCAT(#{searchName}, '%')
+                </when>
+                <when test='keyword == "2"'>
+                    AND n.content LIKE CONCAT('%', #{searchName}, '%')
+                </when>
+                <when test='keyword == "3"'>
+                    AND a.adminName LIKE CONCAT(#{searchName}, '%')
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <select id="selectAdvertisementVideoList" resultType="Map" parameterType="Map">
+        /** SiteMapper.selectAdvertisementVideoList */
+        SELECT n.*,a.adminName FROM t_advertisement_video n
+        INNER JOIN t_admin a ON a.seq=n.writer
+        WHERE 1=1
+        <if test="stat != null and stat != ''">
+            AND n.stat=#{stat}
+        </if>
+        <if test="startDate != null and startDate != ''">
+            AND DATE_FORMAT(n.insertDate, '%Y-%m-%d') &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND DATE_FORMAT(n.insertDate, '%Y-%m-%d') &lt;= #{endDate}
+        </if>
+        <if test="keyword != null and searchName != null and keyword != '' and searchName != ''">
+            <choose>
+                <when test='keyword == "1"'>
+                    AND n.title LIKE CONCAT(#{searchName}, '%')
+                </when>
+                <when test='keyword == "2"'>
+                    AND n.content LIKE CONCAT('%', #{searchName}, '%')
+                </when>
+                <when test='keyword == "3"'>
+                    AND a.adminName LIKE CONCAT(#{searchName}, '%')
+                </when>
+            </choose>
+        </if>
+        ORDER BY n.seq DESC
+        LIMIT #{limitStart},#{rows}
+    </select>
+
+    <select id="selectAdvertisementVideoOne" resultType="Map" parameterType="Map">
+        /** SiteMapper.selectAdvertisementVideoOne */
+        SELECT n.seq
+             , n.title
+             , n.url
+             , n.stat
+             , n.writer
+             , n.insertDate
+             , a.adminName
+        FROM t_advertisement_video n
+                 INNER JOIN t_admin a ON a.seq = n.writer
+        WHERE n.seq = #{seq}
+    </select>
+
 </mapper>

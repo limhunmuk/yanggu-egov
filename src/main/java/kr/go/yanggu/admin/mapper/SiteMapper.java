@@ -86,5 +86,19 @@ public interface SiteMapper {
 
 	int deleteExhibitionFile(Map<String, Object> map) throws SQLException;
 
+	List<Map<String, Object>> selectAdvertisementVideoList(Map<String, Object> map) throws SQLException;
+
+	int selectAdvertisementVideoTotalCount(Map<String, Object> map) throws SQLException;
+
+
+	Map<String, Object> selectAdvertisementVideoOne(Map<String, Object> map) throws SQLException;
+
+	int insertAdvertisementVideo(Map<String, Object> map) throws SQLException;
+
+	int updateAdvertisementVideo(Map<String, Object> map) throws SQLException;
+
+	int deleteAdvertisementVideo(Map<String, Object> map) throws SQLException;
+
+
 
 }

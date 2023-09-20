@@ -4,15 +4,17 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.go.yanggu.admin.mapper.SiteMapper;
 
 @Service("siteService")
+@RequiredArgsConstructor
 public class SiteServiceImpl implements SiteService{
 
-	@Autowired SiteMapper siteMapper;
+	private final SiteMapper siteMapper;
 	
 	@Override
 	public List<Map<String, Object>> selectList(Map<String, Object> map) throws SQLException {
@@ -204,13 +206,38 @@ public class SiteServiceImpl implements SiteService{
 	}
 
 	@Override
-	public int updateExhibitionFile(Map<String, Object> map) throws SQLException {
-		return 0;
+	public int deleteExhibitionFile(Map<String, Object> map) throws SQLException {
+		return siteMapper.deleteExhibitionFile(map);
 	}
 
 	@Override
-	public int deleteExhibitionFile(Map<String, Object> map) throws SQLException {
-		return siteMapper.deleteExhibitionFile(map);
+	public List<Map<String, Object>> selectAdvertisementVideoList(Map<String, Object> map) throws SQLException {
+		return siteMapper.selectAdvertisementVideoList(map);
+	}
+
+	@Override
+	public int selectAdvertisementVideoTotalCount(Map<String, Object> map) throws SQLException {
+		return siteMapper.selectAdvertisementVideoTotalCount(map);
+	}
+
+	@Override
+	public Map<String, Object> selectAdvertisementVideoOne(Map<String, Object> map) throws SQLException {
+		return siteMapper.selectAdvertisementVideoOne(map);
+	}
+
+	@Override
+	public int insertAdvertisementVideo(Map<String, Object> map) throws SQLException {
+		return siteMapper.insertAdvertisementVideo(map);
+	}
+
+	@Override
+	public int updateAdvertisementVideo(Map<String, Object> map) throws SQLException {
+		return siteMapper.updateAdvertisementVideo(map);
+	}
+
+	@Override
+	public int deleteAdvertisementVideo(Map<String, Object> map) throws SQLException {
+		return siteMapper.deleteAdvertisementVideo(map);
 	}
 
 }

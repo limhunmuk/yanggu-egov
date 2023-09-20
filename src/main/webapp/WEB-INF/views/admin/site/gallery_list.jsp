@@ -36,58 +36,36 @@
 								<th scope="row">키워드</th>
 								<td>
 									<select style="width:160px;vertical-align:middle;" name="keyword">
-										<option value="1">전체</option>
-										<option value="2">제목</option>
-										<option value="3">내용</option>
-									</select>
-									<input type="text" name="searchName" value="">
-								</td>
-								<th scope="row">등록일자</th>
-								<td>
-									<input type="text" title="시작일" placeholder="YYYY-MM-DD" class="ico_date" name="startDate" value="" autocomplete="off" id="dp1693895913224">
-									<span class="hypen">~</span>
-									<input type="text" title="종료일" placeholder="YYYY-MM-DD" class="ico_date" name="endDate" value="" autocomplete="off" id="dp1693895913225">
-								</td>
-							</tr>
-						</table>
-						<table class="search">
-							<caption>검색</caption>
-							<colgroup>
-								<col style="width:14%;">
-								<col style="*">
-							</colgroup>
-							<tr>
-								<th scope="row">노출상태</th>
-								<td>
-									<input type="hidden" id="kind" name="kind" value="${kind}">
-	                                <select style="width:200px;" name="stat">
-	                                    <option value="" <c:if test="${stat == ''}">selected</c:if>>전체</option>
-	                                    <option value="Y" <c:if test="${stat == 'Y'}">selected</c:if>>노출</option>
-	                                    <option value="N" <c:if test="${stat == 'N'}">selected</c:if>>미노출</option>
-	                                </select>
-								</td>
-							</tr>
-							<tr>	
-								<th scope="row">등록일자</th>
-	                            <td>
-	                                <input type="text" title="시작일" placeholder="YYYY-MM-DD" class="ico_date" name="startDate" value="${startDate }" autocomplete="off">
-	                                <span class="hypen">~</span>
-	                                <input type="text" title="종료일" placeholder="YYYY-MM-DD" class="ico_date" name="endDate" value="${endDate }" autocomplete="off">
-	                            </td>
-							</tr>
-							<tr>
-								<th scope="row">키워드</th>
-								<td>
-									<select style="width:160px;vertical-align:middle;" name="keyword">
 										<option value="1" <c:if test="${keyword == '1'}">selected</c:if>>제목</option>
 										<option value="2" <c:if test="${keyword == '2'}">selected</c:if>>내용</option>
 										<option value="3" <c:if test="${keyword == '3'}">selected</c:if>>등록자</option>
 									</select>
-	                                <input type="text" name="searchName" value="${searchName }">
+									<input type="text" name="searchName" value="${searchName }">
+								</td>
+								<th scope="row">등록일자</th>
+								<td>
+									<input type="text" title="시작일" placeholder="YYYY-MM-DD" class="ico_date" name="startDate" value="${startDate }" autocomplete="off">
+									<span class="hypen">~</span>
+									<input type="text" title="종료일" placeholder="YYYY-MM-DD" class="ico_date" name="endDate" value="${endDate }" autocomplete="off">
+								</td>
+							<tr>
+								<th scope="row">탭</th>
+								<td>
+									<input type="checkbox" name="tab" id="tab_1" value="1" <c:if test="${tab == '1'}">checked</c:if>><label for="tab_1">봄</label>
+									<input type="checkbox" name="tab" id="tab_2" value="2" <c:if test="${tab == '2'}">checked</c:if>><label for="tab_2">여름</label>
+									<input type="checkbox" name="tab" id="tab_3" value="3" <c:if test="${tab == '3'}">checked</c:if>><label for="tab_3">가을</label>
+									<input type="checkbox" name="tab" id="tab_4" value="4" <c:if test="${tab == '4'}">checked</c:if>><label for="tab_4">겨울</label>
+								</td>
+								<th scope="row">노출상태</th>
+								<td>
+									<select style="width:200px;" name="stat">
+										<option value="" <c:if test="${stat == ''}">selected</c:if>>전체</option>
+										<option value="Y" <c:if test="${stat == 'Y'}">selected</c:if>>노출</option>
+										<option value="N" <c:if test="${stat == 'N'}">selected</c:if>>미노출</option>
+									</select>
 								</td>
 							</tr>
 						</table>
-						
 						<div class="btn_area align_r mt20">
 							<button class="btn_search" type="submit">검색</button>
 							<button type="button" onclick="location.href = 'galleryWrite';">등록</button>

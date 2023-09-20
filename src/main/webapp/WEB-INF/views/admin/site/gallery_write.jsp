@@ -156,7 +156,7 @@
     	    , success : function (data) {
     	    	if(data != 0){
     	    		alert("저장 성공하였습니다.");
-    	    		location.href="/admin/site/galleryList?kind=D";
+    	    		location.href="/admin/site/galleryList";
     	    	}else{
     	    		alert("저장 실패하였습니다.");
     	    	}

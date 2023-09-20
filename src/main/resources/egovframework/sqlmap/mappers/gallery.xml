@@ -11,6 +11,9 @@
     	<if test="stat != null and stat != ''">
     		AND g.stat=#{stat}
     	</if>
+		<if test="tab != null and tab != ''">
+    		AND g.season=#{tab}
+    	</if>
     	<if test="startDate != null and startDate != ''">
         	AND DATE_FORMAT(g.insertDate, '%Y-%m-%d') &gt;= #{startDate}
         </if>
@@ -40,6 +43,9 @@
     	<if test="stat != null and stat != ''">
     		AND g.stat=#{stat}
     	</if>
+		<if test="tab != null and tab != ''">
+			AND g.season=#{tab}
+		</if>
     	<if test="startDate != null and startDate != ''">
         	AND DATE_FORMAT(g.insertDate, '%Y-%m-%d') &gt;= #{startDate}
         </if>

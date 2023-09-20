@@ -10,7 +10,7 @@
             <a href="/admin/site/exhibitionList" <c:if test="${param.menuOn eq '2'}"> class="skin_bg"</c:if>>행사전시</a>
         </li>
         <li class="btn_sub">
-            <a href="/admin/site/galleryList?kind=D"<c:if test="${param.menuOn eq '3'}"> class="skin_bg"</c:if>>수목원 사계절</a>
+            <a href="/admin/site/galleryList"<c:if test="${param.menuOn eq '3'}"> class="skin_bg"</c:if>>수목원 사계절</a>
         </li>
         <li class="btn_sub">
             <a href="/admin/site/qnaList"<c:if test="${param.menuOn eq '4'}"> class="skin_bg"</c:if>>1:1 문의 내역</a>
@@ -19,7 +19,7 @@
             <a href="/admin/site/faqList" <c:if test="${param.menuOn eq '5'}">class="skin_bg"</c:if>>FAQ</a>
         </li>
         <li class="btn_sub">
-            <a href="" <c:if test="${param.menuOn eq '6'}">class="skin_bg"</c:if>>홍보통영상(유투브)</a>
+            <a href="/admin/site/videoList" <c:if test="${param.menuOn eq '6'}">class="skin_bg"</c:if>>홍보통영상(유투브)</a>
         </li>
         <li class="btn_sub">
             <a href="/admin/site/articleList" <c:if test="${param.menuOn eq '7'}">class="skin_bg"</c:if>>게시판 리스트</a>

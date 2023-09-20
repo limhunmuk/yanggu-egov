@@ -470,6 +470,7 @@ public class SiteController {
 		model.addAttribute("endDate",map.get("endDate"));
 		model.addAttribute("searchName",map.get("searchName"));
 		model.addAttribute("keyword",map.get("keyword"));
+		model.addAttribute("tab",map.get("tab"));
 
 		return "/admin/site/gallery_list";
 	}
@@ -499,7 +500,7 @@ public class SiteController {
 				one = galleryService.selectGalleryOne(map);
 			} catch (SQLException e) {
 				e.printStackTrace();
-				logger.info("admin gallery/gallerywrite:",e.getMessage());
+				logger.info("admin site/gallerywrite:",e.getMessage());
 			}
 		}
 		model.addAttribute("kind", "D");
@@ -882,6 +883,97 @@ public class SiteController {
 		mv.setViewName("jsonView");
 		return mv;
 	}
+
+
+
+	/**
+	 * 관리자 > 게시판관리 > 홍보동영상 > 리스트
+	 * @param model
+	 * @param session
+	 * @param request
+	 * @param page
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping(value = "/admin/site/videoList", method = {RequestMethod.GET,RequestMethod.POST})
+	public String videoList(Model model,HttpSession session,
+							  HttpServletRequest request,
+							  @RequestParam(defaultValue="1") int page,
+							  @RequestParam Map<String,Object> map) {
+
+		if (session.getAttribute("loginSeq") == null || "".equals(session.getAttribute("loginSeq"))) {
+			model.addAttribute("url", "/admin/login");
+			model.addAttribute("msg", "권한이 없습니다.");
+			return "/admin/alert/alert";
+		}
+
+		List<Map<String, Object>> list  = new ArrayList<Map<String,Object>>();
+		try {
+			int totalCount = siteService.selectAdvertisementVideoTotalCount(map);
+			int rows = 10;
+			int blocks = 5;
+			int limitStart = (page - 1) * rows;
+			Pager pager = new Pager(totalCount, page, rows, blocks);
+			map.put("limitStart", limitStart);
+			map.put("rows", rows);
+			model.addAttribute("page", page);
+			model.addAttribute("prevLink", pager.getPrevLink());
+			model.addAttribute("pageLinks", pager.getPageLinks());
+			model.addAttribute("nextLink", pager.getNextLink());
+			model.addAttribute("totalPage", pager.getTotalPage());
+			model.addAttribute("totalCount", totalCount);
+			list = siteService.selectAdvertisementVideoList(map);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			logger.info("admin site/advertisementVideoList:",e.getMessage());
+		}
+
+		model.addAttribute("kind", "D");
+		model.addAttribute("list",list);
+		model.addAttribute("stat",map.get("stat"));
+		model.addAttribute("startDate",map.get("startDate"));
+		model.addAttribute("endDate",map.get("endDate"));
+		model.addAttribute("searchName",map.get("searchName"));
+		model.addAttribute("keyword",map.get("keyword"));
+		model.addAttribute("tab",map.get("tab"));
+
+		return "/admin/site/video_list";
+	}
+
+	/**
+	 * 관리자 > 게시판관리 > 홍보동영상 > 등록/수정
+	 * @param model
+	 * @param map
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping(value = "/admin/site/videoWrite", method = RequestMethod.GET)
+	public String videoWrite(Model model, @RequestParam Map<String,Object> map,HttpSession session) {
+
+		model.addAttribute("writer",session.getAttribute("loginSeq"));
+		model.addAttribute("name",session.getAttribute("loginName"));
+		Map<String, Object> one = new HashMap<String, Object>();
+
+		if (session.getAttribute("loginSeq") == null || "".equals(session.getAttribute("loginSeq"))) {
+			model.addAttribute("url", "/admin/login");
+			model.addAttribute("msg", "권한이 없습니다.");
+			return "/admin/alert/alert";
+		}
+
+		if(map.get("seq") != null) {
+			try {
+				one = siteService.selectAdvertisementVideoOne(map);
+			} catch (SQLException e) {
+				e.printStackTrace();
+				logger.info("admin site/videoWrite:",e.getMessage());
+			}
+		}
+		model.addAttribute("one",one);
+
+		return "/admin/site/video_write";
+	}
+
 
 	/**
 	 * 관리자 > 게시판 관리 > 게시판 리스트
