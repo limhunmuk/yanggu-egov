@@ -69,6 +69,7 @@
 								</table>
 							</div>
 							<div class="view_table mt20 focus_target" id="menuInput" style="display: none;">
+								<form id="frmSave" name="frmSave">
 								<table>
 									<caption>작성</caption>
 									<colgroup>
@@ -129,6 +130,7 @@
 									</tr>
 									</tbody>
 								</table>
+								</form>
 							</div>
 						</div>
 						<div style="clear: both;"></div>
@@ -603,12 +605,29 @@
 				// 입력된 데이터 저장 필요
 				alert('신규 추가 데이터');
 				console.log('신규 추가 데이터');
+				insertMenu();
 			}
 			console.log();
 			console.log('/******************************');
 		}
 	}
 	//menuControl.init();
+
+	function insertMenu() {
+		$.ajax({
+			url : "/admin/manage/menuList/save"
+			, data: {}
+			, type: 'post'
+			, dataType: 'json'
+			, success : function (data) {
+				if(data.result != null){
+					alert("ok");
+				}
+			}, error : function () {
+				alert('error');
+			}
+		});
+	}
 </script>
 </body>
 
