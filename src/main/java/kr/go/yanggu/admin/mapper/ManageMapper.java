@@ -1,6 +1,7 @@
 package kr.go.yanggu.admin.mapper;
 
 import egovframework.rte.psl.dataaccess.mapper.Mapper;
+import kr.go.yanggu.admin.dao.MenuListDto;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -18,5 +19,12 @@ public interface ManageMapper {
 	public int admin_member_insert(Map<String, Object> map) throws SQLException;
 
 	public int admin_member_update(Map<String, Object> map) throws SQLException;
+
+	public List<Map<String, Object>> admin_menu_top_list(Map<String, Object> map) throws SQLException;
+
+	public List<Map<String, Object>> admin_menu_bottom_list(String parent) throws SQLException;
+	public List<Map<String, Object>> admin_menu_list(Map<String, Object> map) throws SQLException;
+
+	public int admin_menu_list_total(Map<String, Object> map) throws SQLException;
 	
 }

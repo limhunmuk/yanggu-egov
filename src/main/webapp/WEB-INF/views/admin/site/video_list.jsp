@@ -57,7 +57,7 @@
 								</tr>
 							</table>
 							<div class="align_r mt20">
-								<button type="button" class="btn_down" onclick="location.href = '';">등록</button>
+								<button type="button" class="btn_down" onclick="location.href = 'videoWrite';">등록</button>
 								<button type="submit" class="btn_search">검색</button>
 							</div>
 						</form>
@@ -92,7 +92,7 @@
 											<c:forEach var="item" items="${list}" varStatus="status">
 												<tr>
 													<td>${totalCount - ((page -1) * 10 + status.index)}</td>
-													<td class="t_left"><a href="videooWrite?seq=${item.seq }">${item.title }</a></td>
+													<td class="t_left"><a href="videoWrite?seq=${item.seq }">${item.title }</a></td>
 													<td>${item.adminName }</td>
 													<td><fmt:formatDate pattern="yyyy-MM-dd" value="${item.insertDate }"/></td>
 													<td>${item.stat == "Y"?"노출":"미노출" }</td>

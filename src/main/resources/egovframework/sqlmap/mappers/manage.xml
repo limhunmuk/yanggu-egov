@@ -57,4 +57,50 @@
         WHERE seq = #{seq}
     </update>
 
+    <select id="admin_menu_top_list" resultType="Map" parameterType="Map">
+        /** ManageMapper.admin_menu_top_list */
+        SELECT
+            seq,
+            groupNm,
+            codeNm,
+            parent,
+            title,
+            keyword,
+            targetType,
+            level,
+            sort
+        FROM menu a
+        WHERE parent is null
+
+    </select>
+
+    <select id="admin_menu_bottom_list" resultType="Map" parameterType="java.lang.String">
+        /** ManageMapper.admin_menu_bottom_list */
+        WITH RECURSIVE cte AS (
+            SELECT seq, a.groupNm, codeNm, parent, title, keyword, targetType, level, sort
+            FROM menu a
+            WHERE parent = #{parent}
+            UNION ALL
+            SELECT t.seq, t.groupNm, t.codeNm, t.parent, t.title, t.keyword, t.targetType, t.level, t.sort
+            FROM menu t
+                     JOIN cte h ON t.parent = h.seq
+        )
+        SELECT * FROM cte
+    </select>
+
+    <select id="admin_menu_list" resultType="Map" parameterType="Map">
+        SELECT a.*
+        FROM t_menu_config a
+        WHERE 1=1
+        <if test="limitStart != null">
+            LIMIT #{limitStart},#{rows}
+        </if>
+    </select>
+
+    <select id="admin_menu_list_total" parameterType="Map" resultType="int">
+        SELECT COUNT(*)
+        FROM t_menu_config a
+        WHERE 1=1
+    </select>
+
 </mapper>

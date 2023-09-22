@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import kr.go.yanggu.admin.service.GalleryService;
+import kr.go.yanggu.admin.service.ManageService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,20 +32,13 @@ import kr.go.yanggu.util.Utils;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
+@RequiredArgsConstructor
 public class SiteController {
 	private static final Logger logger = LoggerFactory.getLogger(SiteController.class);
 
 	private final SiteService siteService;
-
 	private final MailServiceImpl homeMailService;
-
 	private final GalleryService galleryService;
-
-	public SiteController(SiteService siteService, MailServiceImpl homeMailService, GalleryService galleryService){
-		this.siteService = siteService;
-		this.homeMailService = homeMailService;
-		this.galleryService = galleryService;
-	}
 
 	/**
 	 * 관리자 > 게시판관리 > 공지사항 - 리스트
@@ -246,7 +241,6 @@ public class SiteController {
 		}
 
 		model.addAttribute("list",list);
-
 		model.addAttribute("stat",map.get("stat"));
 		model.addAttribute("startDate",map.get("startDate"));
 		model.addAttribute("endDate",map.get("endDate"));
@@ -884,8 +878,6 @@ public class SiteController {
 		return mv;
 	}
 
-
-
 	/**
 	 * 관리자 > 게시판관리 > 홍보동영상 > 리스트
 	 * @param model
@@ -974,6 +966,93 @@ public class SiteController {
 		return "/admin/site/video_write";
 	}
 
+	/**
+	 * 관리자 > 게시판관리 > 홍보동영상 > 상세 - 등록
+	 * @param model
+	 * @param map
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/admin/site/videoInsert", method = RequestMethod.POST)
+	public ModelAndView admin_advertisement_video_insert(Model model, @RequestParam Map<String,Object> map) {
+
+		ModelAndView mv = new ModelAndView();
+		int affect = 0;
+
+		String type = map.get("type").toString();
+		if(type.equals("link")) {
+			map.put("attachment", "");
+			map.put("attachment_org", "");
+		}else {
+			map.put("url", "");
+		}
+
+		try {
+			affect = siteService.insertAdvertisementVideo(map);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			logger.info("admin site/insertAdvertisementVideo:",e.getMessage());
+		}
+
+		//return affect+"";
+		mv.addObject("result", affect+"");
+		mv.setViewName("jsonView");
+		return mv;
+	}
+
+	/**
+	 * 관리자 > 게시판관리 > 홍보동영상 > 상세 수정
+	 * @param model
+	 * @param map
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/admin/site/videoUpdate", method = RequestMethod.POST)
+	public ModelAndView admin_advertisement_video_update(Model model,@RequestParam Map<String,Object> map) {
+
+		ModelAndView mv = new ModelAndView();
+		int affect = 0;
+
+		String type = map.get("type").toString();
+		if(type.equals("link")) {
+			map.put("attachment", "");
+			map.put("attachment_org", "");
+		}else {
+			map.put("url", "");
+		}
+
+		try {
+			affect = siteService.updateAdvertisementVideo(map);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			logger.info("admin site/updateAdvertisementVideo:",e.getMessage());
+		}
+
+		//return affect+"";
+		mv.addObject("result", affect+"");
+		mv.setViewName("jsonView");
+		return mv;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/admin/site/videoDelete", method = RequestMethod.POST)
+	public ModelAndView admin_advertisement_video_delete(Model model,@RequestParam Map<String,Object> map) {
+
+		ModelAndView mv = new ModelAndView();
+		int affect = 0;
+
+		try {
+			affect = siteService.deleteAdvertisementVideo(map);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			logger.info("admin site/admin_advertisement_video_delete:",e.getMessage());
+		}
+
+		//return affect+"";
+		mv.addObject("result", affect+"");
+		mv.setViewName("jsonView");
+		return mv;
+	}
 
 	/**
 	 * 관리자 > 게시판 관리 > 게시판 리스트

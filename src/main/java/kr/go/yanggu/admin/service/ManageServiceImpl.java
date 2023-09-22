@@ -1,9 +1,11 @@
 package kr.go.yanggu.admin.service;
 
+import kr.go.yanggu.admin.dao.MenuListDto;
 import kr.go.yanggu.admin.mapper.ManageMapper;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +42,59 @@ public class ManageServiceImpl implements ManageService {
 	public int admin_member_update(Map<String, Object> map) throws SQLException {
 		return manageMapper.admin_member_update(map);
 	}
-	
 
+	@Override
+	public List<Map<String, Object>> admin_menu_top_list(Map<String, Object> map) throws SQLException {
+		return manageMapper.admin_menu_list(map);
+	}
+
+	@Override
+	public List<Map<String, Object>> admin_menu_list(Map<String, Object> map) throws SQLException {
+		return manageMapper.admin_menu_list(map);
+	}
+
+	@Override
+	public int admin_menu_list_total(Map<String, Object> map) throws SQLException {
+		return 0;
+	}
+
+	@Override
+	public List<Map<String, Object>> getMenuList(Map<String, Object> map) throws SQLException {
+
+
+		List<Map<String, Object>> topMenuList = manageMapper.admin_menu_top_list(map);
+		topMenuList.forEach(System.out::println);
+
+		System.out.println(" =============================== ");
+		for (Map<String, Object> topMenu : topMenuList) {
+			String parent = topMenu.get("seq").toString();
+			//topMenu.setFirstMenuListDto(manageMapper.admin_menu_bottom_list(parent));
+
+			List<Map<String, Object>> mapList = manageMapper.admin_menu_bottom_list(parent);
+			topMenu.put("firstMenu", mapList);
+			System.out.println("1depth size >>>>>>>>> maps2List.size() = " + mapList.size());
+			for (Map<String, Object> firstMenu : mapList){
+				System.out.println("bottomList.getSeq() = " + firstMenu.get("seq"));
+				System.out.println("bottomList.getGroupNm() = " + firstMenu.get("groupNm"));
+				System.out.println("bottomList.getCodeNm() = " + firstMenu.get("codeNm"));
+				System.out.println("bottomList.getParent() = " + firstMenu.get("parent"));
+				System.out.println("bottomList.getLevel() = " + firstMenu.get("level"));
+				System.out.println("bottomList.getSort() = " + firstMenu.get("sort"));
+				String parent2 = firstMenu.get("seq").toString();
+				List<Map<String, Object>> maps2List = manageMapper.admin_menu_bottom_list(parent2);
+				System.out.println("2depth size >>>>>>>>> maps2List.size() = " + maps2List.size());
+				for (Map<String, Object> secondList : maps2List){
+					System.out.println("bottomList.getSeq() = " + secondList.get("seq"));
+					System.out.println("bottomList.getGroupNm() = " + secondList.get("groupNm"));
+					System.out.println("bottomList.getCodeNm() = " + secondList.get("codeNm"));
+					System.out.println("bottomList.getParent() = " + secondList.get("parent"));
+					System.out.println("bottomList.getLevel() = " + secondList.get("level"));
+					System.out.println("bottomList.getSort() = " + secondList.get("sort"));
+				}
+			}
+
+
+		}
+		return null;
+	}
 }

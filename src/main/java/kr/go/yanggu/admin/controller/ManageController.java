@@ -224,12 +224,32 @@ public class ManageController {
 			return "/admin/alert/alert";
 		}
 
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> list = null;
 
 		model.addAttribute("list", list);
 		model.addAttribute("adminName", adminName);
 		model.addAttribute("adminId", adminId);
 		return "/admin/manage/menu_list";
+	}
+
+	@RequestMapping(value = "/admin/manage/menuList/init" , method = RequestMethod.GET)
+	public ModelAndView admin_menu_list(Model model,HttpSession session, @RequestParam Map<String,Object> map){
+
+		ModelAndView mv = new ModelAndView();
+
+		List<Map<String, Object>> list = null;
+		try {
+			list = manageService.getMenuList(map);
+			list.stream().forEach(System.out::println);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			logger.info("admin site/admin_menu_list:",e.getMessage());
+		}
+
+		//return affect+"";
+		mv.addObject("list", list);
+		mv.setViewName("jsonView");
+		return mv;
 	}
 
 	/**

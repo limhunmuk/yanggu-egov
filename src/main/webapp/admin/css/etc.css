@@ -35,7 +35,7 @@ div.write table td .file_list li img{max-width: 500px;}
 .pop_wrap{padding:0; background:#fff;}
 .pop_wrap .pop_header{padding: 0 10px; border-bottom: 1px solid #ddd; position:relative;}
 .pop_wrap .pop_header h1{color: #222; font-size: 20px; font-weight: 500; height: 50px; line-height: 50px;}
-.pop_wrap .pop_header .popup_close{position: absolute; top: 0; right: 0; height: 50px; width: 50px; font-size: 0; background: url(modal_close.png) no-repeat center center;}
+.pop_wrap .pop_header .popup_close{position: absolute; top: 0; right: 0; height: 50px; width: 50px; font-size: 0; background: url(../images/common/modal_close.png) no-repeat center center;}
 
 .pop_wrap .pop_body{padding:15px;}
 .pop_wrap .pop_body .con_box{min-height:250px;}
@@ -63,18 +63,32 @@ div.write table td .file_list li img{max-width: 500px;}
 
 .menu_wrap .menu_list{background-color: #fff; border: 1px solid #D3D3D3; margin-top: 20px; max-height: 550px; overflow-y: scroll;}
 .menu_wrap .menu_list .btn_new{display: block; text-align: center; font-size: 16px; margin: 0 auto;}
-.menu_wrap .menu_list dl{margin-top: 5px;}
+/* .menu_wrap .menu_list dl{margin-top: 5px;} */
 .menu_wrap .menu_list dl dt{padding:15px 20px;  border-bottom: 1px solid #D3D3D3; }
 .menu_wrap .menu_list dl dt .depth1{font-size: 14px; font-weight: 500; padding-left: 28px; background: url(../ad_images/common/ico_menu_01.svg) no-repeat left top 4px; background-size: 18px 14px;}
 
-.menu_wrap .menu_list .depth_list li{padding:15px 20px 15px 30px; border-bottom: 1px solid #D3D3D3; }
-.menu_wrap .menu_list .depth_list li .depth2{font-size: 14px; padding-left: 20px; background: url(../ad_images/common/ico_menu_02.svg) no-repeat left 0 top 4px; background-size: 14px 12px;}
+.menu_wrap .menu_list .depth_list li{ }
+.menu_wrap .menu_list .depth_list li .depth2,
+.menu_wrap .menu_list .depth_list li .depth3 {display: block; padding:15px 20px 15px 50px; border-bottom: 1px solid #D3D3D3; font-size: 14px; background: url(../ad_images/common/ico_menu_02.svg) no-repeat left 30px top 50%; background-size: 14px 12px;}
+.menu_wrap .menu_list .depth_list li .depth3 {padding-left: 70px; background-position: left 50px top 50%;}
+
+.menu_wrap .menu_list dl.disabled > *,
+.menu_wrap .menu_list li.disabled > * {opacity: 0.3;}
+.menu_wrap .menu_list dl.disabled li.disabled > * {opacity: 1;}
+
+/* .menu_wrap .menu_list .focus_group dt {border: 1px solid #019664;}
+.menu_wrap .menu_list .focus_group dt a {color: #019664;}
+.menu_wrap .menu_list .focus_group .focus_list {border: 1px solid #019664;} */
+.menu_wrap .menu_list .focus_group .focus_list > a {color: #019664;}
 
 /* 메뉴관리_팝업 */
 .pop_body .menu_wrap .menu_list dl dt,
 .pop_body .menu_wrap .menu_list ul li{display: flex;align-items: center;justify-content: space-between;}
 .pop_body .menu_wrap .menu_list .order_btn .order{display: inline-block; width: 20px; height: 12px; background: url(../ad_images/common/menu_arrow_up_s.png) no-repeat center; background-size: 100%; margin:0 10px;}
 .pop_body .menu_wrap .menu_list .order_btn .order.down{background-image: url(../ad_images/common/menu_arrow_down_s.png);}
+.pop_body .menu_wrap .menu_list ul li {position: relative; display: block;}
+.pop_body .menu_wrap .menu_list ul li a {display: block; padding-right: 60px;}
+.pop_body .menu_wrap .menu_list ul li .order_btn {position: absolute; top: 14px; right: 0;}
 
 /* 컬러코드 */
 .color_code label{margin-right: 10px;}

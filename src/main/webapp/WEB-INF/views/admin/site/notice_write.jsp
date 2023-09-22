@@ -39,6 +39,8 @@
 							<tr>
 								<th scope="row">제목 <span class="ast">&#42;</span></th>
 								<td>
+									<input type="hidden" style="width:200px;" value="${writer}" name="writer">
+									<input type="hidden" style="width:200px;" value="${one.seq }" name="seq">
 									<input type="text" name="title" value="${one.title }" required>
 								</td>
 							</tr>

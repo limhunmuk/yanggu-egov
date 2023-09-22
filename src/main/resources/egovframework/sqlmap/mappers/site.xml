@@ -674,8 +674,11 @@
     <select id="selectAdvertisementVideoOne" resultType="Map" parameterType="Map">
         /** SiteMapper.selectAdvertisementVideoOne */
         SELECT n.seq
+             , n.type
              , n.title
              , n.url
+             , n.attachment
+             , n.attachment_org
              , n.stat
              , n.writer
              , n.insertDate
@@ -684,5 +687,48 @@
                  INNER JOIN t_admin a ON a.seq = n.writer
         WHERE n.seq = #{seq}
     </select>
+
+    <insert id="insertAdvertisementVideo" parameterType="Map">
+        /** SiteMapper.insertAdvertisementVideo */
+        INSERT INTO t_advertisement_video
+        (
+            title
+            ,type
+            ,url
+            ,attachment
+            ,attachment_org
+            ,stat
+            ,writer
+            ,insertDate
+        )
+        VALUES(
+              #{title}
+              ,#{type}
+              ,#{url}
+              ,#{attachment}
+              ,#{attachment_org}
+              ,#{stat}
+              ,#{writer}
+              ,now()
+              )
+    </insert>
+
+    <update id="updateAdvertisementVideo" parameterType="Map">
+        /** SiteMapper.updateAdvertisementVideo */
+        UPDATE t_advertisement_video
+        SET title=#{title},
+            type=#{type},
+            url=#{url},
+            attachment=#{attachment},
+            attachment_org=#{attachment_org},
+            stat=#{stat}
+        WHERE seq=#{seq}
+    </update>
+
+    <delete id="deleteAdvertisementVideo" parameterType="Map">
+        /** SiteMapper.deleteAdvertisementVideo */
+        DELETE FROM t_advertisement_video WHERE seq=#{seq}
+    </delete>
+
 
 </mapper>
