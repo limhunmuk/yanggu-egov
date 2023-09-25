@@ -15,4 +15,6 @@ public interface ManageService {
 	int admin_menu_list_total(Map<String, Object> map) throws SQLException;
 
 	List<Map<String, Object>> getMenuList(Map<String, Object> map) throws SQLException;
+	int admin_menu_insert(Map<String, Object> map) throws SQLException;
+	int admin_menu_update(Map<String, Object> map) throws SQLException;
 }

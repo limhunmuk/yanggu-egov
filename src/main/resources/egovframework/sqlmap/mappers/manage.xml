@@ -89,18 +89,129 @@
     </select>
 
     <select id="admin_menu_list" resultType="Map" parameterType="Map">
-        SELECT a.*
-        FROM t_menu_config a
-        WHERE 1=1
-        <if test="limitStart != null">
-            LIMIT #{limitStart},#{rows}
-        </if>
+        /** ManageMapper.admin_menu_list */
+        SELECT
+        f.seq,
+        f.keyword,
+        f.type,
+        f.title,
+        f.url,
+        f.sort,
+        f.popupYn,
+        f.stat as viewYn,
+        0 as level
+        FROM t_first_menu f
     </select>
 
     <select id="admin_menu_list_total" parameterType="Map" resultType="int">
+
         SELECT COUNT(*)
         FROM t_menu_config a
         WHERE 1=1
     </select>
+
+    <insert id="admin_menu_first_save" parameterType="map">
+        /** ManageMapper.admin_menu_first_save */
+        INSERT INTO t_first_menu(
+                 keyword
+                ,type
+                ,title
+                ,url
+                ,sort
+                ,popupYn
+                ,stat
+                ,insertDate
+                ,writer
+        )
+        VALUES (#{keyword}
+                ,#{type}
+                ,#{title}
+                ,#{url}
+                ,#{sort}
+                ,#{popupYn}
+                ,#{stat}
+                ,now()
+                ,#{writer})
+
+    </insert>
+
+    <insert id="admin_menu_first_update" parameterType="map">
+        /** ManageMapper.admin_menu_first_update */
+        update t_first_menu
+             set
+        <if test="keyword != null and keyword != ''">
+                keyword = #{keyword},
+        </if>
+        <if test="type != null and type != ''">
+                type = #{type},
+        </if>
+        <if test="title != null and title != ''">
+                title = #{title},
+        </if>
+        <if test="url != null and url != ''">
+                url = #{url},
+        </if>
+        <if test="sort != null and sort != ''">
+                sort = #{sort},
+        </if>
+        <if test="popupYn != null and popupYn != ''">
+                popupYn = #{popupYn},
+        </if>
+        <if test="stat != null and stat != ''">
+                stat = #{stat},
+        </if>
+            writer = #{writer}
+        where seq = #{seq}
+    </insert>
+
+    <insert id="admin_menu_second_save" parameterType="map">
+        /** ManageMapper.admin_menu_second_save */
+        INSERT INTO t_first_menu(
+                 keyword
+                ,type
+                ,title
+                ,url
+                ,sort
+                ,popupYn
+                ,stat
+                ,insertDate
+                ,writer
+        )
+        VALUES (#{keyword}
+                ,#{type}
+                ,#{title}
+                ,#{url}
+                ,#{sort}
+                ,#{popupYn}
+                ,#{stat}
+                ,now()
+                ,#{writer})
+
+    </insert>
+
+    <insert id="admin_menu_third_save" parameterType="map">
+        /** ManageMapper.admin_menu_third_save */
+        INSERT INTO t_first_menu(
+                 keyword
+                ,type
+                ,title
+                ,url
+                ,sort
+                ,popupYn
+                ,stat
+                ,insertDate
+                ,writer
+        )
+        VALUES (#{keyword}
+                ,#{type}
+                ,#{title}
+                ,#{url}
+                ,#{sort}
+                ,#{popupYn}
+                ,#{stat}
+                ,now()
+                ,#{writer})
+
+    </insert>
 
 </mapper>

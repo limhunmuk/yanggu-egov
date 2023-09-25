@@ -97,4 +97,14 @@ public class ManageServiceImpl implements ManageService {
 		}
 		return null;
 	}
+
+	@Override
+	public int admin_menu_insert(Map<String, Object> map) throws SQLException {
+		return manageMapper.admin_menu_first_save(map);
+	}
+
+	@Override
+	public int admin_menu_update(Map<String, Object> map) throws SQLException {
+		return manageMapper.admin_menu_first_update(map);
+	}
 }

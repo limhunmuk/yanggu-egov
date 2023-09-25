@@ -26,5 +26,9 @@ public interface ManageMapper {
 	public List<Map<String, Object>> admin_menu_list(Map<String, Object> map) throws SQLException;
 
 	public int admin_menu_list_total(Map<String, Object> map) throws SQLException;
-	
+	public int admin_menu_first_save(Map<String, Object> map) throws SQLException;
+	public int admin_menu_second_save(Map<String, Object> map) throws SQLException;
+	public int admin_menu_third_save(Map<String, Object> map) throws SQLException;
+
+	int admin_menu_first_update(Map<String, Object> map) throws SQLException;
 }

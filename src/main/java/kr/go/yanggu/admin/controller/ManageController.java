@@ -1,7 +1,9 @@
 package kr.go.yanggu.admin.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.go.yanggu.admin.service.ManageService;
 import kr.go.yanggu.util.Pager;
+import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -224,30 +226,77 @@ public class ManageController {
 			return "/admin/alert/alert";
 		}
 
-		List<Map<String, Object>> list = null;
-
-		model.addAttribute("list", list);
 		model.addAttribute("adminName", adminName);
 		model.addAttribute("adminId", adminId);
 		return "/admin/manage/menu_list";
 	}
 
-	@RequestMapping(value = "/admin/manage/menuList/init" , method = RequestMethod.GET)
-	public ModelAndView admin_menu_list(Model model,HttpSession session, @RequestParam Map<String,Object> map){
+	/**
+	 * 관리자 > 운영관리 > 메뉴관리 - 메뉴등록
+	 * @param model
+	 * @param session
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping(value = "/admin/manage/menuList/save" , method = RequestMethod.POST)
+	public ModelAndView admin_menu_save(Model model,HttpSession session, @RequestParam Map<String,Object> map){
 
 		ModelAndView mv = new ModelAndView();
 
-		List<Map<String, Object>> list = null;
-		try {
-			list = manageService.getMenuList(map);
-			list.stream().forEach(System.out::println);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			logger.info("admin site/admin_menu_list:",e.getMessage());
+		if (session.getAttribute("loginSeq") == null || "".equals(session.getAttribute("loginSeq"))) {
+			model.addAttribute("url", "/admin/login");
+			model.addAttribute("msg", "권한이 없습니다.");
+			mv.setViewName("/admin/alert/alert");
 		}
 
+		System.out.println("map.get(\"title\").toString() = " + map.get("title").toString());
+		System.out.println("map.get(\"keyword\").toString() = " + map.get("keyword").toString());
+		System.out.println("map.get(\"type\").toString() = " + map.get("type").toString());
+		System.out.println("map.get(\"url\").toString() = " + map.get("url").toString());
+		System.out.println("map.get(\"popupYn\").toString() = " + map.get("popupYn").toString());
+		System.out.println("map.get(\"stat\").toString() = " + map.get("stat").toString());
+		map.put("writer", session.getAttribute("loginSeq").toString());
+		Object seq = map.get("seq");
+
+		int result = 0;
+		try {
+			if(seq != null){
+				String strSeq = seq.toString();
+				System.out.println("업데이트 >>>>>>>>>>>> strSeq = " + strSeq);
+				manageService.admin_menu_update(map);
+			}else{
+				System.out.println(" 신규등록 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ");
+				result = manageService.admin_menu_insert(map);
+			}
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 		//return affect+"";
-		mv.addObject("list", list);
+		mv.addObject("result", result);
+		mv.setViewName("jsonView");
+		return mv;
+	}
+
+	@RequestMapping(value = "/admin/manage/menuList/init" , method = RequestMethod.GET)
+	public ModelAndView admin_menu_init(Model model,HttpSession session, @RequestParam Map<String,Object> map){
+
+		ModelAndView mv = new ModelAndView();
+
+		if (session.getAttribute("loginSeq") == null || "".equals(session.getAttribute("loginSeq"))) {
+			model.addAttribute("url", "/admin/login");
+			model.addAttribute("msg", "권한이 없습니다.");
+			mv.setViewName("/admin/alert/alert");
+		}
+
+		List<Map<String, Object>> list = null;
+		try {
+			list = manageService.admin_menu_list(map);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		//return affect+"";
+		mv.addObject("result", list);
 		mv.setViewName("jsonView");
 		return mv;
 	}

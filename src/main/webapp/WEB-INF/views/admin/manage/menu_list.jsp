@@ -1,7 +1,9 @@
+<%@ page import="java.text.SimpleDateFormat" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:import url="/WEB-INF/views/admin/common/head.jsp"/>
+<%@ include file="../inc/smartEditor.jsp"%>
 <body id="nav_3">
 <div id="wrap" class="skin_type01">
 	<c:import url="/WEB-INF/views/admin/common/gnb.jsp"/>
@@ -25,9 +27,11 @@
 						<div class="main_box">
 							<div class="menu_wrap">
 								<div class="menu_list focus_target" id="menuListBox">
+
 									<!-- <div class="menu_new">
                                         <p class="txt">등록한 메뉴가 없습니다.</p>
                                     </div> -->
+
 
 									<!-- <div class="menu_new">
                                         <div class="input_area">
@@ -69,7 +73,6 @@
 								</table>
 							</div>
 							<div class="view_table mt20 focus_target" id="menuInput" style="display: none;">
-								<form id="frmSave" name="frmSave">
 								<table>
 									<caption>작성</caption>
 									<colgroup>
@@ -80,33 +83,33 @@
 									<tr>
 										<th scope="row">메뉴 제목 <span class="asta">*</span></th>
 										<td>
-											<input type="text" id="menu_title" title="메뉴 제목 입력" placeholder="" style="width:100%;">
+											<input type="text" id="menu_title" name="title" title="메뉴 제목 입력" placeholder="" style="width:100%;">
 										</td>
 									</tr>
 									<tr>
 										<th scope="row">SEO 설정 키워드 <i class="ico_info" data-tooltip-text="SEO 키워드를 메뉴 성격에 맞게 적절하게 입력해주시면 검색 노출이 잘 됩니다."></i></th>
 										<td>
-											<input type="text" id="menu_keyword" title="SEO 설정 키워드" placeholder="" style="width:100%;">
+											<input type="text" id="menu_keyword" name="keyword" title="SEO 설정 키워드" placeholder="" style="width:100%;">
 										</td>
 									</tr>
 									<tr>
 										<th scope="row">메뉴 유형 <span class="asta">*</span></th>
 										<td>
 											<div>
-												<input type="radio" id="boardy_01" name="board" value="1" class="hide_0">
+												<input type="radio" id="boardy_01" name="type" value="BOARD" class="hide_0">
 												<label for="boardy_01" class="hide_0">게시판</label>
-												<input type="radio" id="boardy_02" name="board" value="2" class="hide_0">
+												<input type="radio" id="boardy_02" name="type" value="CONTENTS" class="hide_0">
 												<label for="boardy_02" class="hide_0">콘텐츠</label>
-												<input type="radio" id="boardy_03" name="board" value="3">
+												<input type="radio" id="boardy_03" name="type" value="LINK">
 												<label for="boardy_03">링크</label>
 											</div>
 											<!-- 링크 -->
 											<div class="mt10">
-												<input type="text" title="링크 URL" id="url" value="" style="width: 70%;">
+												<input type="text" title="링크 URL" id="url" name="url" value="" style="width: 70%;">
 												<label for="url" class="blind">링크 URL 작성</label>
-												<select name="linkList" id="linkList" style="width: 150px; vertical-align: top;">
-													<option value="">현재창</option>
-													<option value="">새창</option>
+												<select name="popupYn" id="popupYn" style="width: 150px; vertical-align: top;">
+													<option value="N">현재창</option>
+													<option value="Y">새창</option>
 													<option value="">링크없음</option>
 												</select>
 											</div>
@@ -115,9 +118,9 @@
 									<tr>
 										<th scope="row">노출상태 <span class="asta">*</span></th>
 										<td>
-											<input type="radio" id="viewYn_01" name="viewYn" value="Y" checked="">
+											<input type="radio" id="viewYn_01" name="stat" value="Y" checked="">
 											<label for="viewYn_01">노출</label>
-											<input type="radio" id="viewYn_02" name="viewYn" value="N">
+											<input type="radio" id="viewYn_02" name="stat" value="N">
 											<label for="viewYn_02">미노출</label>
 										</td>
 									</tr>
@@ -125,18 +128,20 @@
 									<tr class="hide_0">
 										<th scope="row">내용 <span class="asta">*</span></th>
 										<td>
-											<textarea name="editor" id="editor" cols="30" rows="10">에디터 영역입니다. </textarea>
+											<%--<textarea name="content" id="editor" cols="30" rows="10">에디터 영역입니다. </textarea>--%>
+											<textarea id="editor_html" name="content">${one.content }</textarea>
 										</td>
 									</tr>
 									</tbody>
 								</table>
-								</form>
 							</div>
 						</div>
 						<div style="clear: both;"></div>
 						<div class="write_btn align_r mt35">
 							<button type="submit" class="btn_modify focus_target" id="saveBtn" onclick="menuControl.save(event)" style="display: none;">저장</button>
 						</div>
+						<input type="hidden" id="sort" name="sort" value="0">
+						<input type="hidden" id="seq" name="seq" value="">
 					</form>
 				</div>
 			</div>
@@ -146,43 +151,7 @@
 <script>
 	$(function(){
 		$('#gnb ul li').eq(6).addClass('on');
-
-		var list;
-		$.ajax({
-			url : "/admin/manage/menuList/init"
-			, data: {}
-			, type: 'get'
-			, dataType: 'json'
-			, success : function (data) {
-				if(data.list != null){
-					list = data.list;
-					console.log("size :" + data.list.length);
-					console.log("=================");
-					console.log(data.list);
-					console.log("=================");
-					menuControl.menuData = [];
-					for (var i =0; i< data.list.length; i++){
-						let obj = data.list[i];
-						console.log("===============");
-						console.log("seq : " + obj.seq);
-						console.log("groupNm : " +obj.groupNm);
-						console.log("codeNm : " +obj.codeNm);
-						console.log("parent : " +obj.parent);
-						console.log("title : " +obj.title);
-						console.log("level : " +obj.level);
-						console.log("sort : " +obj.sort);
-						console.log("===============");
-						menuControl.menuData.push(obj);
-					}
-					//menuControl.menuData = data.list;
-					console.log(menuControl.menuData);
-					menuControl.init();
-				}
-			}, error : function () {
-				alert('error');
-			}
-		});
-
+		loadData();
 	});
 
 	// 메뉴 관리 초벌
@@ -191,134 +160,40 @@
 	const menuControl = {
 		menuBox: document.getElementById('menuListBox'),
 		menuData: [
-			/*{
-				seq: 1,
-				groupCdNm: 1,
-				detailCdNm: null,
-				upperCdNm: null,
-				title: '메뉴1번',
-				keyword: '메뉴1번 의 검색 키워드',
-				type: null,
-				url: null,
-				level: 0,
-				sort: 0,
-				popupYn: 'N',
-				viewYn: 'Y',
-				delYn: 'N',
-				writer: 'admin'
-			},
-			{
-				seq: 2,
-				groupCdNm: 1,
-				detailCdNm: 2,
-				upperCdNm: null,
-				title: '메뉴1번 하위메뉴',
-				keyword: '메뉴1번 하위메뉴 의 검색 키워드',
-				type: null,
-				url: null,
-				level: 1,
-				sort: 0,
-				popupYn: 'N',
-				viewYn: 'Y',
-				delYn: 'N',
-				writer: 'admin'
-			},
-			{
-				seq: 123123123,
-				groupCdNm: 123123123,
-				detailCdNm: null,
-				upperCdNm: null,
-				title: '감자칩',
-				keyword: '감자칩칩',
-				type: null,
-				url: null,
-				level: 0,
-				sort: 1,
-				popupYn: 'N',
-				viewYn: 'Y',
-				delYn: 'N',
-				writer: 'admin'
-			},
-			{
-				seq: 123456123,
-				groupCdNm: 123123123,
-				detailCdNm: null,
-				upperCdNm: null,
-				title: '고구마칩22',
-				keyword: '고고구국마마칩칩22',
-				type: null,
-				url: null,
-				level: 1,
-				sort: 1,
-				popupYn: 'N',
-				viewYn: 'N',
-				delYn: 'N',
-				writer: 'admin'
-			},
-			{
-				seq: 564,
-				groupCdNm: 123123123,
-				detailCdNm: null,
-				upperCdNm: null,
-				title: '고구마칩',
-				keyword: '고고구국마마칩칩',
-				type: null,
-				url: null,
-				level: 1,
-				sort: 0,
-				popupYn: 'N',
-				viewYn: 'Y',
-				delYn: 'N',
-				writer: 'admin'
-			},
-			{
-				seq: 98,
-				groupCdNm: 98,
-				detailCdNm: null,
-				upperCdNm: null,
-				title: '안보이는 메뉴',
-				keyword: '안보이는 메뉴 키워드',
-				type: null,
-				url: null,
-				level: 0,
-				sort: 0,
-				popupYn: 'N',
-				viewYn: 'Y',
-				delYn: 'N',
-				writer: 'admin'
-			},
-			{
-				seq: 4564,
-				groupCdNm: 98,
-				detailCdNm: null,
-				upperCdNm: null,
-				title: '안보이는 메뉴 하위',
-				keyword: '안보이는 메뉴 하위 키워드',
-				type: null,
-				url: null,
-				level: 1,
-				sort: 0,
-				popupYn: 'N',
-				viewYn: 'Y',
-				delYn: 'N',
-				writer: 'admin'
-			},
-			{
-				seq: 33,
-				groupCdNm: 98,
-				detailCdNm: 4564,
-				upperCdNm: 4564,
-				title: '3dep',
-				keyword: '3deppp',
-				type: null,
-				url: null,
-				level: 2,
-				sort: 0,
-				popupYn: 'N',
-				viewYn: 'Y',
-				delYn: 'N',
-				writer: 'admin'
-			},*/
+			/*
+        {
+            seq: 1,
+            groupCdNm: 1,
+            detailCdNm: null,
+            upperCdNm: null,
+            title: '메뉴1번',
+            keyword: '메뉴1번 의 검색 키워드',
+            type: null,
+            url: null,
+            level: 0,
+            sort: 0,
+            popupYn: 'N',
+            viewYn: 'Y',
+            delYn: 'N',
+            writer: 'admin'
+        },
+        {
+            seq: 1,
+            groupCdNm: 1,
+            detailCdNm: null,
+            upperCdNm: null,
+            title: '메뉴1번',
+            keyword: '메뉴1번 의 검색 키워드',
+            type: null,
+            url: null,
+            level: 0,
+            sort: 0,
+            popupYn: 'N',
+            viewYn: 'Y',
+            delYn: 'N',
+            writer: 'admin'
+        },*/
+
 		],
 		isEdit: false,
 		init: function() {
@@ -366,6 +241,8 @@
 							</li>
 							`;
 						this.menuBox.querySelector(`#menu\${_this.groupCdNm} > dd > ul`).insertAdjacentHTML('beforeend', html);
+						/// lhm test 에디터 설정
+						initEditor();
 					}
 				});
 				// 3depth 데이터 세팅
@@ -384,6 +261,8 @@
 							</li>
 							`;
 						this.menuBox.querySelector(`#menu\${_this.upperCdNm}`).insertAdjacentHTML('beforeend', html);
+						/// 23.09.25 lhm test 에디터 설정
+						initEditor();
 					}
 				});
 
@@ -480,7 +359,12 @@
 			// 선택한 메뉴의 데이터 세팅
 			document.querySelector('#menu_title').value = selectData.title;
 			document.querySelector('#menu_keyword').value = selectData.keyword;
-			document.querySelector(`input[name="viewYn"][value="\${selectData.viewYn}"]`).checked = true;
+			// 230925 lhm test viewYn -> stat 로 변경
+			document.querySelector(`input[name="stat"][value="\${selectData.viewYn}"]`).checked = true;
+			document.querySelector(`input[name="type"][value="\${selectData.type}"]`).checked = true;
+			document.querySelector(`select[name="popupYn"] option[value="\${selectData.popupYn}"]`).selected = true;
+			//document.querySelector(`select[name="popupYn"] option[value='N']`).selected = true;
+			document.getElementById("url").value = selectData.url;
 
 			// 선택한 데이터의 level 값 따라 세팅이 바뀜
 			// 실제 데이터 관리시 수정할 필요 있음
@@ -531,6 +415,15 @@
 				} else {
 					this.menuBox.querySelector('.focus_list').closest('ul').insertAdjacentHTML('beforeend', addHtml);
 				}
+
+				// 23.09.25 lhm 2depth 부터 에디터 온
+				initEditor();
+				// 선택한 데이터의 level 값 따라 세팅이 바뀜
+				// 실제 데이터 관리시 수정할 필요 있음
+				// if (selectData.level > 0) {
+				document.querySelectorAll('.hide_0').forEach(($el) => {
+					$el.style.display = null;
+				});
 			} else {
 				// 선택된 메뉴 없을시 1depth
 				let addHtml = `
@@ -542,6 +435,13 @@
 					</div>
 					`;
 				this.menuBox.insertAdjacentHTML('beforeend', addHtml);
+
+				// 선택한 데이터의 level 값 따라 세팅이 바뀜
+				// 실제 데이터 관리시 수정할 필요 있음
+				//if (selectData.level == 0) {
+				document.querySelectorAll('.hide_0').forEach(($el) => {
+					$el.style.display = 'none';
+				});
 			}
 			// 기존 포커스 해제
 			if (document.querySelector('.focus_list')) {
@@ -601,9 +501,10 @@
 				alert('수정된 데이터 seq: ' + changeSeq);
 				console.log('바뀐 데이터의 seq');
 				console.log(changeSeq);
+				$("#seq").val(changeSeq);
+				updateMenu();
 			} else {
 				// 입력된 데이터 저장 필요
-				alert('신규 추가 데이터');
 				console.log('신규 추가 데이터');
 				insertMenu();
 			}
@@ -611,21 +512,109 @@
 			console.log('/******************************');
 		}
 	}
-	//menuControl.init();
+	menuControl.init();
 
-	function insertMenu() {
+	function loadData() {
+
 		$.ajax({
-			url : "/admin/manage/menuList/save"
-			, data: {}
-			, type: 'post'
+			url : "/admin/manage/menuList/init"
+			//, data: {}
+			, type: 'get'
 			, dataType: 'json'
 			, success : function (data) {
 				if(data.result != null){
-					alert("ok");
+					let list = data.result;
+					//console.log("size :" + list.size);
+					//console.log("=================");
+					//console.log(list);
+					//console.log("=================");
+					menuControl.menuData = [];
+					for (var i =0; i< list.length; i++){
+						let obj = list[i];
+						/*console.log("===============");
+						console.log("seq : " + obj.seq);
+						console.log("title : " +obj.title);
+						console.log("keyword : " +obj.keyword);
+						console.log("type : " +obj.type);
+						console.log("url : " +obj.url);
+						console.log("popup : " +obj.popupYn);
+						console.log("stat : " +obj.stat);
+						console.log("sort : " +obj.sort+i);
+						console.log("===============");*/
+						menuControl.menuData.push(obj);
+					}
+					//menuControl.menuData = list;
+					console.log("init ==================");
+					console.log(menuControl.menuData);
+					console.log("init ==================");
+
+					menuControl.init();
+
 				}
 			}, error : function () {
 				alert('error');
 			}
+		});
+	}
+
+	function insertMenu() {
+		$.ajax({
+			url : "/admin/manage/menuList/save"
+			, data: $("#frm").serialize()
+			, type: 'POST'
+			, dataType: 'json'
+			, success : function (data) {
+				if(data.result != null){
+					alert("ok");
+					menuControl.menuData.isEdit = false;
+					location.reload();
+
+				}
+			}, error : function () {
+				alert('error');
+			}
+		});
+	}
+
+	function updateMenu() {
+		$.ajax({
+			url : "/admin/manage/menuList/save"
+			, data: $("#frm").serialize()
+			, type: 'POST'
+			, dataType: 'json'
+			, success : function (data) {
+				if(data.result != null){
+					alert("ok");
+					menuControl.menuData.isEdit = false;
+					location.reload();
+				}
+			}, error : function () {
+				alert('error');
+			}
+		});
+	}
+
+	function validForm(frm) {
+		oEditors.getById["editor_html"].exec("UPDATE_CONTENTS_FIELD", []); // 에디터에 등록한 텍스트 입력
+
+		if (frm.content.value == '<p>&nbsp;</p>' || frm.content.value == '') {
+			alert('내용입력하세요');
+			return false;
+		}
+	}
+
+	var oEditors = [];
+	function initEditor() {
+
+		nhn.husky.EZCreator.createInIFrame({
+			oAppRef: oEditors,
+			elPlaceHolder: 'editor_html',
+			sSkinURI: '/se2/SmartEditor2Skin.html',
+			htParams : {
+				bUseToolbar : true,				// 툴바 사용 여부 (true:사용/ false:사용하지 않음)
+				bUseVerticalResizer : true,		// 입력창 크기 조절바 사용 여부 (true:사용/ false:사용하지 않음)
+				bUseModeChanger : true,			// 모드 탭(Editor | HTML | TEXT) 사용 여부 (true:사용/ false:사용하지 않음)
+			},
 		});
 	}
 </script>
