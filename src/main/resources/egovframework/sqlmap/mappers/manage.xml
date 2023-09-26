@@ -110,7 +110,7 @@
         WHERE 1=1
     </select>
 
-    <insert id="admin_menu_first_save" parameterType="map">
+    <insert id="admin_menu_first_save" parameterType="map" useGeneratedKeys="true" keyProperty="seq">
         /** ManageMapper.admin_menu_first_save */
         INSERT INTO t_first_menu(
                  keyword
@@ -135,7 +135,7 @@
 
     </insert>
 
-    <insert id="admin_menu_first_update" parameterType="map">
+    <update id="admin_menu_first_update" parameterType="map" >
         /** ManageMapper.admin_menu_first_update */
         update t_first_menu
              set
@@ -162,14 +162,22 @@
         </if>
             writer = #{writer}
         where seq = #{seq}
-    </insert>
+    </update>
 
-    <insert id="admin_menu_second_save" parameterType="map">
+    <update id="admin_menu_first_delete" parameterType="long">
+        /** ManageMapper.admin_menu_first_delete */
+        delete from t_first_menu
+        where seq = #{seq}
+    </update>
+
+    <insert id="admin_menu_second_save" parameterType="map" useGeneratedKeys="true" keyProperty="seq">
         /** ManageMapper.admin_menu_second_save */
-        INSERT INTO t_first_menu(
-                 keyword
+        INSERT INTO t_second_menu(
+                 firstSeq
+                ,keyword
                 ,type
                 ,title
+                ,content
                 ,url
                 ,sort
                 ,popupYn
@@ -177,9 +185,12 @@
                 ,insertDate
                 ,writer
         )
-        VALUES (#{keyword}
+        VALUES (
+                #{firstSeq}
+                ,#{keyword}
                 ,#{type}
                 ,#{title}
+                ,#{content}
                 ,#{url}
                 ,#{sort}
                 ,#{popupYn}
@@ -189,28 +200,33 @@
 
     </insert>
 
-    <insert id="admin_menu_third_save" parameterType="map">
+    <insert id="admin_menu_third_save" parameterType="map" useGeneratedKeys="true" keyProperty="seq">
         /** ManageMapper.admin_menu_third_save */
-        INSERT INTO t_first_menu(
-                 keyword
-                ,type
-                ,title
-                ,url
-                ,sort
-                ,popupYn
-                ,stat
-                ,insertDate
-                ,writer
+        INSERT INTO t_third_menu(
+                  secondSeq
+                 ,keyword
+                 ,type
+                 ,title
+                 ,content
+                 ,url
+                 ,sort
+                 ,popupYn
+                 ,stat
+                 ,insertDate
+                 ,writer
         )
-        VALUES (#{keyword}
-                ,#{type}
-                ,#{title}
-                ,#{url}
-                ,#{sort}
-                ,#{popupYn}
-                ,#{stat}
-                ,now()
-                ,#{writer})
+        VALUES (
+                #{secondSeq}
+               ,#{keyword}
+               ,#{type}
+               ,#{title}
+               ,#{content}
+               ,#{url}
+               ,#{sort}
+               ,#{popupYn}
+               ,#{stat}
+               ,now()
+               ,#{writer})
 
     </insert>
 

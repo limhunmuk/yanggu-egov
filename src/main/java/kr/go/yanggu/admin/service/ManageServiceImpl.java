@@ -3,6 +3,7 @@ package kr.go.yanggu.admin.service;
 import kr.go.yanggu.admin.dao.MenuListDto;
 import kr.go.yanggu.admin.mapper.ManageMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -99,12 +100,63 @@ public class ManageServiceImpl implements ManageService {
 	}
 
 	@Override
+	public int admin_menu_save(Map<String, Object> map) throws SQLException {
+
+		String level = "";
+		String seq = "";
+		int rtnSeq = 0;
+		if(map.get("level") != null) level = map.get("level").toString();
+		if(map.get("seq") != null) seq = map.get("seq").toString();
+
+		// 대메뉴 등록
+		if(!StringUtils.hasText(level)){
+
+			if(!StringUtils.hasText(seq)){
+				rtnSeq = manageMapper.admin_menu_first_save(map);
+			}else {
+				rtnSeq = manageMapper.admin_menu_first_update(map);
+			}
+
+		}
+
+		// 중메뉴 등록
+		if(StringUtils.hasText(level) && level.equals("1")){
+			map.put("firstSeq", rtnSeq);
+			//rtnSeq = manageMapper.admin_menu_second_save(map);
+
+			if(!StringUtils.hasText(seq)){
+				rtnSeq = manageMapper.admin_menu_second_save(map);
+			}else {
+				rtnSeq = manageMapper.admin_menu_second_update(map);
+			}
+		}
+
+		//소메뉴 등록
+		if(StringUtils.hasText(level) && level.equals("2")){
+			map.put("secondSeq", rtnSeq);
+			//rtnSeq = manageMapper.admin_menu_third_save(map);
+			if(!StringUtils.hasText(seq)){
+				rtnSeq = manageMapper.admin_menu_third_save(map);
+			}else {
+				rtnSeq = manageMapper.admin_menu_third_update(map);
+			}
+		}
+
+		return rtnSeq;
+	}
+
+	@Override
 	public int admin_menu_insert(Map<String, Object> map) throws SQLException {
-		return manageMapper.admin_menu_first_save(map);
+		return 0;
 	}
 
 	@Override
 	public int admin_menu_update(Map<String, Object> map) throws SQLException {
 		return manageMapper.admin_menu_first_update(map);
+	}
+
+	@Override
+	public int admin_menu_delete(Long seq) throws SQLException {
+		return manageMapper.admin_menu_first_delete(seq);
 	}
 }

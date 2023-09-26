@@ -105,9 +105,9 @@
 											</div>
 											<!-- 링크 -->
 											<div class="mt10">
-												<input type="text" title="링크 URL" id="url" name="url" value="" style="width: 70%;">
+												<input type="text" title="링크 URL" id="url" name="url" value="" style="width: 70%; display: none">
 												<label for="url" class="blind">링크 URL 작성</label>
-												<select name="popupYn" id="popupYn" style="width: 150px; vertical-align: top;">
+												<select name="popupYn" id="popupYn" style="width: 150px; vertical-align: top; display: none">
 													<option value="N">현재창</option>
 													<option value="Y">새창</option>
 													<option value="">링크없음</option>
@@ -141,7 +141,10 @@
 							<button type="submit" class="btn_modify focus_target" id="saveBtn" onclick="menuControl.save(event)" style="display: none;">저장</button>
 						</div>
 						<input type="hidden" id="sort" name="sort" value="0">
-						<input type="hidden" id="seq" name="seq" value="">
+						[seq]<input type="text" id="seq" name="seq" value="">
+						[first_seq]<input type="text" id="firstSeq" name="firstSeq" value="">
+						[second_seq]<input type="text" id="secondSeq" name="secondSeq" value="">
+						[level]<input type="text" id="level" name="level" value="">
 					</form>
 				</div>
 			</div>
@@ -152,6 +155,25 @@
 	$(function(){
 		$('#gnb ul li').eq(6).addClass('on');
 		loadData();
+
+		$("input[name=type]").click(function () {
+			if($(this).attr("value") == "BOARD"){
+				$("#url").hide();
+				$("#popupYn").hide();
+				$("tr.hide_0").hide();  // 에디터 숨김
+			}
+			if($(this).attr("value") == "CONTENTS"){
+				$("#url").hide();
+				$("#popupYn").hide();
+				$("tr.hide_0").show();  // 에디터 숨김
+			}
+			if($(this).attr("value") == "LINK"){
+				$("#url").show();
+				$("#popupYn").show();
+				$("tr.hide_0").hide();  // 에디터 숨김
+			}
+		});
+
 	});
 
 	// 메뉴 관리 초벌
@@ -242,7 +264,7 @@
 							`;
 						this.menuBox.querySelector(`#menu\${_this.groupCdNm} > dd > ul`).insertAdjacentHTML('beforeend', html);
 						/// lhm test 에디터 설정
-						initEditor();
+						//initEditor();
 					}
 				});
 				// 3depth 데이터 세팅
@@ -262,7 +284,7 @@
 							`;
 						this.menuBox.querySelector(`#menu\${_this.upperCdNm}`).insertAdjacentHTML('beforeend', html);
 						/// 23.09.25 lhm test 에디터 설정
-						initEditor();
+						//initEditor();
 					}
 				});
 
@@ -279,6 +301,8 @@
 							if (this.menuBox.querySelector('.instantData')) {
 								this.menuBox.querySelector('.instantData').remove();
 							}
+							// 23.09.25 lhm 깊이 구분값 저장
+							document.getElementById("level").value = "";
 						}
 						this.isEdit = false;
 
@@ -403,6 +427,9 @@
 				if (focusTarget == '1' || focusTarget == '2') {
 					depth = 'depth3'
 				}
+
+				// 23.09.25 lhm 깊이 구분값 저장
+				document.getElementById("level").value = depth == 'depth2' ? 1 : 2;
 				let addHtml = `
 					<li class="instantData">
 						<div class="\${depth}">
@@ -411,19 +438,21 @@
 					</li>
 					`;
 				if (depth == 'depth2') {
+					alert(focusTarget + "!!!!!!");
 					this.menuBox.querySelector('.focus_group dd > ul').insertAdjacentHTML('beforeend', addHtml);
 				} else {
 					this.menuBox.querySelector('.focus_list').closest('ul').insertAdjacentHTML('beforeend', addHtml);
 				}
 
-				// 23.09.25 lhm 2depth 부터 에디터 온
+				// 23.09.25 .lhm 2depth 부터 에디터 온
 				initEditor();
-				// 선택한 데이터의 level 값 따라 세팅이 바뀜
-				// 실제 데이터 관리시 수정할 필요 있음
-				// if (selectData.level > 0) {
+				// 메뉴추가시 에디터 수정
+
 				document.querySelectorAll('.hide_0').forEach(($el) => {
 					$el.style.display = null;
 				});
+
+
 			} else {
 				// 선택된 메뉴 없을시 1depth
 				let addHtml = `
@@ -435,6 +464,9 @@
 					</div>
 					`;
 				this.menuBox.insertAdjacentHTML('beforeend', addHtml);
+
+				// 23.09.25 lhm 깊이 구분값 저장
+				document.getElementById("level").value = "";
 
 				// 선택한 데이터의 level 값 따라 세팅이 바뀜
 				// 실제 데이터 관리시 수정할 필요 있음
@@ -452,7 +484,15 @@
 			document.querySelector('#menuInput').style.display = 'block';
 			document.querySelector('#saveBtn').style.display = 'inline-block';
 
+			//document.querySelector('#url').style.display = 'none';
+
+			//document.querySelector('#popupYn').style.display = 'none';
+			//document.querySelector('#boardy_01').checked = 'true';
+			//document.querySelector('tr.hide_0').style.display = 'none';
+
 			this.reset();
+
+
 		},
 		deleteMenu: function() {
 			if (this.isEdit && this.menuBox.querySelector('.instantData')) {
@@ -461,6 +501,8 @@
 				if (deleteConfirm) {
 					this.isEdit = false;
 					this.menuBox.querySelector('.instantData').remove();
+					// 23.09.25 lhm 깊이 구분값 저장
+					document.getElementById("level").value = "";
 				}
 			} else if (this.menuBox.querySelector('.focus_list')) {
 				// 일반 메뉴 삭제
@@ -469,7 +511,8 @@
 					let findData = this.findData(this.menuBox.querySelector('.focus_list a').dataset.seq, true);
 					// 삭제할 데이터
 					alert('데이터 삭제 처리 seq: '+findData.seq);
-					console.log(findData);
+					document.getElementById("seq").value = findData.seq;
+					deleteMenu(findData.seq);
 				}
 			} else {
 				// 오류
@@ -497,17 +540,32 @@
 			console.log('/******************************');
 			if (document.querySelector('.focus_list')) {
 				// 수정된 데이터 케이스
-				let changeSeq = document.querySelector('.focus_list').dataset.seq;
-				alert('수정된 데이터 seq: ' + changeSeq);
-				console.log('바뀐 데이터의 seq');
-				console.log(changeSeq);
-				$("#seq").val(changeSeq);
-				updateMenu();
+				let level = document.getElementById("level").value;
+				document.getElementById("seq").value = document.querySelector('.focus_list').dataset.seq;
+				let seq = document.getElementById("seq").value;
+				if(level == "1") document.getElementById("firstSeq").value = seq;
+				if(level == "2") document.getElementById("secondSeq").value = seq;
+				 alert('수정된 데이터 firstSeq: ' + document.getElementById("firstSeq").value);
+				//console.log('바뀐 데이터의 seq');
+				//console.log(changeSeq);
+				//$("#seq").val(changeSeq);
+				//document.getElementById("#seq").value = changeSeq;
+
 			} else {
 				// 입력된 데이터 저장 필요
 				console.log('신규 추가 데이터');
-				insertMenu();
+				//insertMenu();
+
+				let level = document.getElementById("level").value;
+				document.getElementById("seq").value = document.querySelector('.focus_list').dataset.seq;
+				let seq = document.getElementById("seq").value;
+				if(level == "1") document.getElementById("firstSeq").value = seq;
+				if(level == "2") document.getElementById("secondSeq").value = seq;
+				alert('수정된 데이터 firstSeq: ' + document.getElementById("firstSeq").value);
 			}
+
+			// 서버에서 insert or update
+			saveMenu();
 			console.log();
 			console.log('/******************************');
 		}
@@ -524,23 +582,9 @@
 			, success : function (data) {
 				if(data.result != null){
 					let list = data.result;
-					//console.log("size :" + list.size);
-					//console.log("=================");
-					//console.log(list);
-					//console.log("=================");
 					menuControl.menuData = [];
 					for (var i =0; i< list.length; i++){
 						let obj = list[i];
-						/*console.log("===============");
-						console.log("seq : " + obj.seq);
-						console.log("title : " +obj.title);
-						console.log("keyword : " +obj.keyword);
-						console.log("type : " +obj.type);
-						console.log("url : " +obj.url);
-						console.log("popup : " +obj.popupYn);
-						console.log("stat : " +obj.stat);
-						console.log("sort : " +obj.sort+i);
-						console.log("===============");*/
 						menuControl.menuData.push(obj);
 					}
 					//menuControl.menuData = list;
@@ -557,7 +601,12 @@
 		});
 	}
 
-	function insertMenu() {
+	function saveMenu() {
+
+		alert(document.getElementById("seq").value);
+		alert(document.getElementById("firstSeq").value);
+		alert(document.getElementById("secondSeq").value);
+
 		$.ajax({
 			url : "/admin/manage/menuList/save"
 			, data: $("#frm").serialize()
@@ -576,11 +625,11 @@
 		});
 	}
 
-	function updateMenu() {
+	function deleteMenu(seq) {
 		$.ajax({
-			url : "/admin/manage/menuList/save"
-			, data: $("#frm").serialize()
-			, type: 'POST'
+			url : "/admin/manage/menuList/delete"
+			, data: {"seq" : seq}
+			, type: 'post'
 			, dataType: 'json'
 			, success : function (data) {
 				if(data.result != null){
@@ -616,6 +665,7 @@
 				bUseModeChanger : true,			// 모드 탭(Editor | HTML | TEXT) 사용 여부 (true:사용/ false:사용하지 않음)
 			},
 		});
+
 	}
 </script>
 </body>

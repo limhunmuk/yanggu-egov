@@ -3,11 +3,14 @@ package kr.go.yanggu.admin.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.go.yanggu.admin.service.ManageService;
 import kr.go.yanggu.util.Pager;
+import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,12 +30,13 @@ import java.util.Map;
  */
 @Controller
 public class ManageController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(ManageController.class);
-	
+
 	private final ManageService manageService;
 
 	public ManageController(ManageService manageService){
+		System.out.println("manageService = " + manageService);
 		this.manageService = manageService;
 	}
 
@@ -75,17 +79,17 @@ public class ManageController {
 									@RequestParam(defaultValue="1") int page,
 									@RequestParam(defaultValue="") String adminName,
 									@RequestParam(defaultValue="") String adminId) {
-		
+
 		if (session.getAttribute("loginSeq") == null || "".equals(session.getAttribute("loginSeq"))) {
     		model.addAttribute("url", "/admin/login");
     		model.addAttribute("msg", "권한이 없습니다.");
     		return "/admin/alert/alert";
     	}
-		
+
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
 		try {
-			int totalCount = manageService.admin_member_list_total(map);     
+			int totalCount = manageService.admin_member_list_total(map);
 	        int rows = 10;
 	        int blocks = 5;
 	        int limitStart = (page - 1) * rows;
@@ -109,7 +113,7 @@ public class ManageController {
 			logger.info("admin manage/manager_list:",e.getMessage());
 		}
 		model.addAttribute("list", list);
-		model.addAttribute("adminName", adminName);	
+		model.addAttribute("adminName", adminName);
 		model.addAttribute("adminId", adminId);
 
 		return "/admin/manage/manager_list";
@@ -255,19 +259,20 @@ public class ManageController {
 		System.out.println("map.get(\"url\").toString() = " + map.get("url").toString());
 		System.out.println("map.get(\"popupYn\").toString() = " + map.get("popupYn").toString());
 		System.out.println("map.get(\"stat\").toString() = " + map.get("stat").toString());
+		System.out.println("map.get(\"level\").toString() = " + map.get("level").toString());
 		map.put("writer", session.getAttribute("loginSeq").toString());
-		Object seq = map.get("seq");
+		String seq = map.get("seq").toString();
+		String level = map.get("level").toString();
+		System.out.println("level = " + level);
 
 		int result = 0;
 		try {
-			if(seq != null){
+			if(!StringUtils.hasText(level) || !StringUtils.hasText(seq)){
 				String strSeq = seq.toString();
-				System.out.println("업데이트 >>>>>>>>>>>> strSeq = " + strSeq);
-				manageService.admin_menu_update(map);
-			}else{
-				System.out.println(" 신규등록 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! ");
-				result = manageService.admin_menu_insert(map);
+				System.out.println("seq >>>>>>>>>>>> strSeq = " + strSeq);
+				manageService.admin_menu_save(map);
 			}
+
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -278,6 +283,13 @@ public class ManageController {
 		return mv;
 	}
 
+	/**
+	 *  관리자 > 운영관리 > 메뉴관리 - 메뉴초기화
+	 * @param model
+	 * @param session
+	 * @param map
+	 * @return
+	 */
 	@RequestMapping(value = "/admin/manage/menuList/init" , method = RequestMethod.GET)
 	public ModelAndView admin_menu_init(Model model,HttpSession session, @RequestParam Map<String,Object> map){
 
@@ -300,6 +312,38 @@ public class ManageController {
 		mv.setViewName("jsonView");
 		return mv;
 	}
+
+	/**
+	 * 관리자 > 운영관리 > 메뉴관리 - 메뉴삭제
+	 * @param model
+	 * @param session
+	 * @param seq
+	 * @return
+	 */
+	@RequestMapping(value = "/admin/manage/menuList/delete" , method = RequestMethod.POST)
+	public ModelAndView admin_menu_delete(Model model,HttpSession session, @RequestParam String seq) {
+
+
+		System.out.println("seq =================================== " + seq);
+		ModelAndView mv = new ModelAndView();
+
+        if (session.getAttribute("loginSeq") == null || "".equals(session.getAttribute("loginSeq"))) {
+            model.addAttribute("url", "/admin/login");
+            model.addAttribute("msg", "권한이 없습니다.");
+            mv.setViewName("/admin/alert/alert");
+        }
+
+        int result;
+        try {
+            result = manageService.admin_menu_delete(Long.parseLong(seq));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        //return affect+"";
+        mv.addObject("result", result);
+        mv.setViewName("jsonView");
+        return mv;
+    }
 
 	/**
 	 * 관리자 > 운영관리 > 메인배너 - 리스트
