@@ -142,9 +142,6 @@
         <if test="keyword != null and keyword != ''">
                 keyword = #{keyword},
         </if>
-        <if test="type != null and type != ''">
-                type = #{type},
-        </if>
         <if test="title != null and title != ''">
                 title = #{title},
         </if>
@@ -160,6 +157,8 @@
         <if test="stat != null and stat != ''">
                 stat = #{stat},
         </if>
+            /* 하위메뉴 있을 시*/
+            type = #{type},
             writer = #{writer}
         where seq = #{seq}
     </update>

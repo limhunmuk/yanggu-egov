@@ -102,6 +102,8 @@
 												<label for="boardy_02" class="hide_0">콘텐츠</label>
 												<input type="radio" id="boardy_03" name="type" value="LINK">
 												<label for="boardy_03">링크</label>
+												<input type="radio" id="boardy_04" name="type" value="">
+												<label for="boardy_04">하위메뉴</label>
 											</div>
 											<!-- 링크 -->
 											<div class="mt10">
@@ -145,6 +147,7 @@
 						[first_seq]<input type="text" id="firstSeq" name="firstSeq" value="">
 						[second_seq]<input type="text" id="secondSeq" name="secondSeq" value="">
 						[level]<input type="text" id="level" name="level" value="">
+						[gbn(IST/UPD)]<input type="text" id="gbn" name="gbn" value="">
 					</form>
 				</div>
 			</div>
@@ -373,6 +376,8 @@
 				alert('오류');
 				return false;
 			}
+
+			console.log("=============여기");
 			console.log(selectData);
 
 			if (isReturn) {
@@ -389,6 +394,7 @@
 			document.querySelector(`select[name="popupYn"] option[value="\${selectData.popupYn}"]`).selected = true;
 			//document.querySelector(`select[name="popupYn"] option[value='N']`).selected = true;
 			document.getElementById("url").value = selectData.url;
+			document.getElementById("level").value = selectData.level;
 
 			// 선택한 데이터의 level 값 따라 세팅이 바뀜
 			// 실제 데이터 관리시 수정할 필요 있음
@@ -396,10 +402,37 @@
 				document.querySelectorAll('.hide_0').forEach(($el) => {
 					$el.style.display = 'none';
 				});
+
+				// 신규등록 OR 수정 유무 체크
+				console.log("selectData.seq : " + selectData.seq);
+				alert(selectData.seq);
+				selectData.seq > 0 ? document.getElementById("gbn").value = "UPD" : document.getElementById("gbn").value = "ISR";
+
+				document.getElementById("seq").value = selectData.seq;
+				document.getElementById("firstSeq").value = "";
+				document.getElementById("secondSeq").value = "";
+
 			} else {
 				document.querySelectorAll('.hide_0').forEach(($el) => {
 					$el.style.display = null;
 				});
+
+				if(selectData.level == 1) {
+					document.getElementById("seq").value = "";
+					document.getElementById("firstSeq").value = selectData.seq;
+					document.getElementById("secondSeq").value = "";
+
+					console.log("selectData.firstSeq : " + selectData.firstSeq);
+					alert(selectData.firstSeq);
+					// 신규등록 OR 수정 유무 체크
+					selectData.firstSeq > 0 ? document.getElementById("gbn").value = "UPD" : document.getElementById("gbn").value = "ISR";
+				}
+				if(selectData.level == 2){
+					// 3depth 설정시 firstSeq 값을 저장해야되니 다시 확인
+					document.getElementById("seq").value = "";
+					document.getElementById("firstSeq").value = selectData.firstSeq;
+					document.getElementById("secondSeq").value = selectData.seq;
+				}
 			}
 
 			// 인풋, 기타 요소 block 처리
@@ -428,8 +461,6 @@
 					depth = 'depth3'
 				}
 
-				// 23.09.25 lhm 깊이 구분값 저장
-				document.getElementById("level").value = depth == 'depth2' ? 1 : 2;
 				let addHtml = `
 					<li class="instantData">
 						<div class="\${depth}">
@@ -438,15 +469,24 @@
 					</li>
 					`;
 				if (depth == 'depth2') {
-					alert(focusTarget + "!!!!!!");
 					this.menuBox.querySelector('.focus_group dd > ul').insertAdjacentHTML('beforeend', addHtml);
 				} else {
 					this.menuBox.querySelector('.focus_list').closest('ul').insertAdjacentHTML('beforeend', addHtml);
 				}
 
-				// 23.09.25 .lhm 2depth 부터 에디터 온
-				initEditor();
+				// 23.09.25 .lhm 2depth 부터 에디터 on > 왜 초기값이 length가 1 이지?
+				if(oEditors.length < 2) initEditor();
 				// 메뉴추가시 에디터 수정
+
+				// 23.09.25 lhm 깊이 구분값 저장
+				// 메뉴 추가 > 2 or 3  depth 신규
+				document.getElementById("level").value = depth == 'depth2' ? 1 : 2;
+				document.getElementById("gbn").value = "ISR";
+				let level = document.getElementById("level").value;
+				if(document.getElementById("level").value == 1) {
+					document.getElementById("firstSeq").value = document.getElementById("seq").value;
+					document.getElementById("seq").value = "";
+				}
 
 				document.querySelectorAll('.hide_0').forEach(($el) => {
 					$el.style.display = null;
@@ -474,6 +514,13 @@
 				document.querySelectorAll('.hide_0').forEach(($el) => {
 					$el.style.display = 'none';
 				});
+
+
+				// 메뉴 추가 > 1 depth 신규
+				document.getElementById("seq").value = "";
+				document.getElementById("firstSeq").value = "";
+				document.getElementById("secondSeq").value = "";
+				document.getElementById("gbn").value = "ISR";
 			}
 			// 기존 포커스 해제
 			if (document.querySelector('.focus_list')) {
@@ -484,15 +531,8 @@
 			document.querySelector('#menuInput').style.display = 'block';
 			document.querySelector('#saveBtn').style.display = 'inline-block';
 
-			//document.querySelector('#url').style.display = 'none';
-
-			//document.querySelector('#popupYn').style.display = 'none';
-			//document.querySelector('#boardy_01').checked = 'true';
-			//document.querySelector('tr.hide_0').style.display = 'none';
 
 			this.reset();
-
-
 		},
 		deleteMenu: function() {
 			if (this.isEdit && this.menuBox.querySelector('.instantData')) {
@@ -540,12 +580,7 @@
 			console.log('/******************************');
 			if (document.querySelector('.focus_list')) {
 				// 수정된 데이터 케이스
-				let level = document.getElementById("level").value;
-				document.getElementById("seq").value = document.querySelector('.focus_list').dataset.seq;
-				let seq = document.getElementById("seq").value;
-				if(level == "1") document.getElementById("firstSeq").value = seq;
-				if(level == "2") document.getElementById("secondSeq").value = seq;
-				 alert('수정된 데이터 firstSeq: ' + document.getElementById("firstSeq").value);
+				 alert('수정된 데이터  ' + document.getElementById("seq").value);
 				//console.log('바뀐 데이터의 seq');
 				//console.log(changeSeq);
 				//$("#seq").val(changeSeq);
@@ -555,22 +590,55 @@
 				// 입력된 데이터 저장 필요
 				console.log('신규 추가 데이터');
 				//insertMenu();
-
-				let level = document.getElementById("level").value;
-				document.getElementById("seq").value = document.querySelector('.focus_list').dataset.seq;
-				let seq = document.getElementById("seq").value;
-				if(level == "1") document.getElementById("firstSeq").value = seq;
-				if(level == "2") document.getElementById("secondSeq").value = seq;
-				alert('수정된 데이터 firstSeq: ' + document.getElementById("firstSeq").value);
 			}
 
 			// 서버에서 insert or update
 			saveMenu();
-			console.log();
-			console.log('/******************************');
 		}
 	}
 	menuControl.init();
+
+	function seqFinder(data) {
+
+		// 선택한 데이터의 level 값 따라 세팅이 바뀜
+		// 실제 데이터 관리시 수정할 필요 있음
+		if (data.level == 0) {
+			document.querySelectorAll('.hide_0').forEach(($el) => {
+				$el.style.display = 'none';
+			});
+
+			// 신규등록 OR 수정 유무 체크
+			console.log("selectData.seq : " + data.seq);
+			data.seq > 0 ? document.getElementById("gbn").value = "UPD" : document.getElementById("gbn").value = "ISR";
+
+			document.getElementById("seq").value = data.seq;
+			document.getElementById("firstSeq").value = "";
+			document.getElementById("secondSeq").value = "";
+
+		} else {
+			document.querySelectorAll('.hide_0').forEach(($el) => {
+				$el.style.display = null;
+			});
+
+			if(data.level == 1) {
+				document.getElementById("seq").value = "";
+				document.getElementById("firstSeq").value = data.seq;
+				document.getElementById("secondSeq").value = "";
+
+				console.log("selectData.firstSeq : " + data.firstSeq);
+				alert(data.firstSeq);
+				// 신규등록 OR 수정 유무 체크
+				data.firstSeq > 0 ? document.getElementById("gbn").value = "UPD" : document.getElementById("gbn").value = "ISR";
+			}
+			if(data.level == 2){
+				// 3depth 설정시 firstSeq 값을 저장해야되니 다시 확인
+				document.getElementById("seq").value = "";
+				document.getElementById("firstSeq").value = data.firstSeq;
+				document.getElementById("secondSeq").value = data.seq;
+			}
+		}
+
+	}
 
 	function loadData() {
 
@@ -602,10 +670,6 @@
 	}
 
 	function saveMenu() {
-
-		alert(document.getElementById("seq").value);
-		alert(document.getElementById("firstSeq").value);
-		alert(document.getElementById("secondSeq").value);
 
 		$.ajax({
 			url : "/admin/manage/menuList/save"

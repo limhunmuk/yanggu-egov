@@ -103,15 +103,23 @@ public class ManageServiceImpl implements ManageService {
 	public int admin_menu_save(Map<String, Object> map) throws SQLException {
 
 		String level = "";
+		String gbn = "";
 		String seq = "";
+		String firstSeq = "";
+		String secondSeq = "";
+
 		int rtnSeq = 0;
 		if(map.get("level") != null) level = map.get("level").toString();
 		if(map.get("seq") != null) seq = map.get("seq").toString();
+		if(map.get("firstSeq") != null) firstSeq = map.get("firstSeq").toString();
+		if(map.get("secondSeq") != null) secondSeq = map.get("secondSeq").toString();
+		if(map.get("gbn") != null) gbn = map.get("gbn").toString();
 
+		// seq를 먼저 따질까, level을 먼저 따질까?
 		// 대메뉴 등록
-		if(!StringUtils.hasText(level)){
+		if(!StringUtils.hasText(level) || level.equals("0")){
 
-			if(!StringUtils.hasText(seq)){
+			if(StringUtils.hasText(gbn) && gbn.equals("ISR")){
 				rtnSeq = manageMapper.admin_menu_first_save(map);
 			}else {
 				rtnSeq = manageMapper.admin_menu_first_update(map);
@@ -121,10 +129,10 @@ public class ManageServiceImpl implements ManageService {
 
 		// 중메뉴 등록
 		if(StringUtils.hasText(level) && level.equals("1")){
-			map.put("firstSeq", rtnSeq);
+			map.put("firstSeq", firstSeq);
 			//rtnSeq = manageMapper.admin_menu_second_save(map);
 
-			if(!StringUtils.hasText(seq)){
+			if(StringUtils.hasText(gbn) && gbn.equals("ISR")){
 				rtnSeq = manageMapper.admin_menu_second_save(map);
 			}else {
 				rtnSeq = manageMapper.admin_menu_second_update(map);
@@ -133,9 +141,11 @@ public class ManageServiceImpl implements ManageService {
 
 		//소메뉴 등록
 		if(StringUtils.hasText(level) && level.equals("2")){
-			map.put("secondSeq", rtnSeq);
+			map.put("firstSeq", firstSeq);
+			map.put("secondSeq", secondSeq);
 			//rtnSeq = manageMapper.admin_menu_third_save(map);
-			if(!StringUtils.hasText(seq)){
+
+			if(StringUtils.hasText(gbn) && gbn.equals("ISR")){
 				rtnSeq = manageMapper.admin_menu_third_save(map);
 			}else {
 				rtnSeq = manageMapper.admin_menu_third_update(map);

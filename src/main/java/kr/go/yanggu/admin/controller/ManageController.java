@@ -235,53 +235,6 @@ public class ManageController {
 		return "/admin/manage/menu_list";
 	}
 
-	/**
-	 * 관리자 > 운영관리 > 메뉴관리 - 메뉴등록
-	 * @param model
-	 * @param session
-	 * @param map
-	 * @return
-	 */
-	@RequestMapping(value = "/admin/manage/menuList/save" , method = RequestMethod.POST)
-	public ModelAndView admin_menu_save(Model model,HttpSession session, @RequestParam Map<String,Object> map){
-
-		ModelAndView mv = new ModelAndView();
-
-		if (session.getAttribute("loginSeq") == null || "".equals(session.getAttribute("loginSeq"))) {
-			model.addAttribute("url", "/admin/login");
-			model.addAttribute("msg", "권한이 없습니다.");
-			mv.setViewName("/admin/alert/alert");
-		}
-
-		System.out.println("map.get(\"title\").toString() = " + map.get("title").toString());
-		System.out.println("map.get(\"keyword\").toString() = " + map.get("keyword").toString());
-		System.out.println("map.get(\"type\").toString() = " + map.get("type").toString());
-		System.out.println("map.get(\"url\").toString() = " + map.get("url").toString());
-		System.out.println("map.get(\"popupYn\").toString() = " + map.get("popupYn").toString());
-		System.out.println("map.get(\"stat\").toString() = " + map.get("stat").toString());
-		System.out.println("map.get(\"level\").toString() = " + map.get("level").toString());
-		map.put("writer", session.getAttribute("loginSeq").toString());
-		String seq = map.get("seq").toString();
-		String level = map.get("level").toString();
-		System.out.println("level = " + level);
-
-		int result = 0;
-		try {
-			if(!StringUtils.hasText(level) || !StringUtils.hasText(seq)){
-				String strSeq = seq.toString();
-				System.out.println("seq >>>>>>>>>>>> strSeq = " + strSeq);
-				manageService.admin_menu_save(map);
-			}
-
-
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		//return affect+"";
-		mv.addObject("result", result);
-		mv.setViewName("jsonView");
-		return mv;
-	}
 
 	/**
 	 *  관리자 > 운영관리 > 메뉴관리 - 메뉴초기화
@@ -309,6 +262,52 @@ public class ManageController {
 		}
 		//return affect+"";
 		mv.addObject("result", list);
+		mv.setViewName("jsonView");
+		return mv;
+	}
+
+	/**
+	 * 관리자 > 운영관리 > 메뉴관리 - 메뉴등록
+	 * @param model
+	 * @param session
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping(value = "/admin/manage/menuList/save" , method = RequestMethod.POST)
+	public ModelAndView admin_menu_save(Model model,HttpSession session, @RequestParam Map<String,Object> map){
+
+		ModelAndView mv = new ModelAndView();
+
+		if (session.getAttribute("loginSeq") == null || "".equals(session.getAttribute("loginSeq"))) {
+			model.addAttribute("url", "/admin/login");
+			model.addAttribute("msg", "권한이 없습니다.");
+			mv.setViewName("/admin/alert/alert");
+		}
+
+		System.out.println("map.get(\"title\").toString() = " + map.get("title").toString());
+		System.out.println("map.get(\"keyword\").toString() = " + map.get("keyword").toString());
+		System.out.println("map.get(\"type\").toString() = " + map.get("type").toString());
+		System.out.println("map.get(\"url\").toString() = " + map.get("url").toString());
+		System.out.println("map.get(\"popupYn\").toString() = " + map.get("popupYn").toString());
+		System.out.println("map.get(\"stat\").toString() = " + map.get("stat").toString());
+		System.out.println("map.get(\"level\").toString() = " + map.get("level").toString());
+		System.out.println("map.get(\"level\").toString() = " + map.get("gbn").toString());
+
+		map.put("writer", session.getAttribute("loginSeq").toString());
+
+		String seq = map.get("seq").toString();
+		String level = map.get("level").toString();
+
+		System.out.println("level = " + level);
+
+		int result = 0;
+		try {
+			manageService.admin_menu_save(map);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		//return affect+"";
+		mv.addObject("result", result);
 		mv.setViewName("jsonView");
 		return mv;
 	}
